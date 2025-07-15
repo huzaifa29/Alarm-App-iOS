@@ -8,8 +8,15 @@
 import SwiftUI
 
 struct LaunchView: View {
+    @EnvironmentObject var viewModel: AuthViewModelImpl
+    
     var body: some View {
         Text("Alaram App")
+            .frame(alignment: .center)
+            .onAppear {
+                print("Launch View")
+                viewModel.updateState()
+            }
     }
 }
 
