@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    @EnvironmentObject var viewModel: AuthViewModelImpl
+    
     @State private var selectedTab: Int = 0
     
     var data: [Onboarding]
@@ -35,7 +37,7 @@ struct OnboardingView: View {
                     
                 } else {
                     Button {
-                        print("Skip")
+                        viewModel.updateState()
                     } label: {
                         Text("Skip")
                             .font(Font.getFont(.bold, size: 16))

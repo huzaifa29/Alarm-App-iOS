@@ -9,7 +9,6 @@ import Foundation
 
 enum AuthViewModelState {
     case launch
-    case onboarding // Onboarding screen
-    case registeredUser // Logged in with Apple and registered on Firestore
-    case permission 
+    case onboarding
+    case signup
 }

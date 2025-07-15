@@ -16,9 +16,7 @@ class AuthViewModelImpl: ObservableObject {
         case .launch:
             configureCurrentState()
         case .onboarding:
-            state = .permission
-        case .permission:
-            state = .registeredUser
+            state = .signup
         default:
             print("")
         }
@@ -30,6 +28,6 @@ private extension AuthViewModelImpl {
     func configureCurrentState() {
         let onboardingShown = AppDefaults.onboardingShown
         let hasCompletedPermission = AppDefaults.permissionScreenShown
-        state = onboardingShown && hasCompletedPermission ? .registeredUser : .onboarding
+        state = onboardingShown && hasCompletedPermission ? .signup : .onboarding
     }
 }
