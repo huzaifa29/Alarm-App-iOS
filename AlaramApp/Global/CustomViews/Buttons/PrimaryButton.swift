@@ -10,6 +10,7 @@ import SwiftUI
 struct PrimaryButton: View {
     var leftIcon: String?
     var text: String
+    var iconSpacing: CGFloat = 12
     var action: (() -> Void)?
     
     var body: some View {
@@ -24,7 +25,7 @@ struct PrimaryButton: View {
             Button {
                 action?()
             } label: {
-                HStack(spacing: 12) {
+                HStack(spacing: iconSpacing) {
                     if let leftIcon = leftIcon {
                         Image(leftIcon) // Replace with actual asset name
                             .resizable()

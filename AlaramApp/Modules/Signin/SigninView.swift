@@ -11,6 +11,7 @@ struct SigninView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var path = [AuthRoute]()
+    @State private var isPresentHome = false
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -22,6 +23,9 @@ struct SigninView: View {
                     .padding(.vertical, 20)
                 
                 Spacer()
+            }
+            .fullScreenCover(isPresented: $isPresentHome) {
+                HomeView()
             }
             .ignoresSafeArea(edges: .all)
             .navigationBarHidden(true)
@@ -87,7 +91,9 @@ extension SigninView {
     
     func getBottomView() -> some View {
         VStack(spacing: 10) {
-            PrimaryButton(text: "Sign In")
+            PrimaryButton(text: "Sign In") {
+                isPresentHome.toggle()
+            }
             
             Text("OR")
                 .font(.getFont(.bold, size: 18))

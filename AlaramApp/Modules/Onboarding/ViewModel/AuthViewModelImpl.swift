@@ -27,7 +27,6 @@ class AuthViewModelImpl: ObservableObject {
 private extension AuthViewModelImpl {
     func configureCurrentState() {
         let onboardingShown = AppDefaults.onboardingShown
-        let hasCompletedPermission = AppDefaults.permissionScreenShown
-        state = onboardingShown && hasCompletedPermission ? .signin : .onboarding
+        state = onboardingShown ? .signin : .onboarding
     }
 }
