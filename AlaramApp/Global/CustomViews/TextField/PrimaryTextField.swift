@@ -70,6 +70,5 @@ struct PrimaryTextField: View {
                                        endPoint: .bottom), lineWidth: 1)
         )
         .clipShape(.capsule)
-        .padding(.horizontal)
     }
 }

@@ -65,7 +65,6 @@ struct PrimaryButton: View {
                 .clipShape(Capsule())
             }
         }
-        .padding(.horizontal)
     }
 }
 

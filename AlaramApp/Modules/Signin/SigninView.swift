@@ -28,7 +28,8 @@ struct SigninView: View {
             .navigationDestination(for: AuthRoute.self, destination: { route in
                 switch route {
                 case .forgotPassword:
-                    EmptyView()
+                    ForgotPasswordView(path: $path)
+                    
                 case .signup:
                     SignupView(path: $path)
                 }
@@ -67,12 +68,16 @@ extension SigninView {
             PrimaryTextField(icon: "ic_email", placeholder: "Enter Email Address", text: $email)
             PrimaryTextField(icon: "ic_lock", placeholder: "Enter Password", text: $password, fieldType: .secure, isSecureToggleEnabled: true)
             Button {
-                print("Forgot Password")
+                self.path.append(.forgotPassword)
             } label: {
-                Text("OR")
-                    .font(.getFont(.bold, size: 16))
-                    .foregroundStyle(Color(.custom2D2D40))
-                    .frame(height: 26)
+                HStack {
+                    Spacer()
+                    Text("Forgot Password?")
+                        .font(.getFont(.bold, size: 16))
+                        .foregroundStyle(Color(.custom2D2D40))
+                        .frame(height: 26)
+                    
+                }
             }
             
         }
