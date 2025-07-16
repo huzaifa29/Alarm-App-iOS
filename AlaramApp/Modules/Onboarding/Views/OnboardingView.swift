@@ -27,7 +27,11 @@ struct OnboardingView: View {
             
             VStack(spacing: 20) {
                 PrimaryButton(text: selectedTab == 2 ? "Finish" : "Next") {
-                    selectedTab += 1
+                    if selectedTab != 2 {
+                        selectedTab += 1
+                    } else {
+                        viewModel.updateState()
+                    }
                 }
                 
                 if selectedTab == 2 {
@@ -45,7 +49,6 @@ struct OnboardingView: View {
                     }
                     .frame(height: 26)
                 }
-                
                 
             }
             .padding(.horizontal, 20)
