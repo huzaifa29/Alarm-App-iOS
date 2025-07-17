@@ -11,7 +11,7 @@ struct SigninView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var path = [AuthRoute]()
-    @State private var isPresentHome = false
+    @State private var isPresentTabbar = false
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -24,8 +24,8 @@ struct SigninView: View {
                 
                 Spacer()
             }
-            .fullScreenCover(isPresented: $isPresentHome) {
-                HomeView()
+            .fullScreenCover(isPresented: $isPresentTabbar) {
+                TabbarView()
             }
             .ignoresSafeArea(edges: .all)
             .navigationBarHidden(true)
@@ -92,7 +92,7 @@ extension SigninView {
     func getBottomView() -> some View {
         VStack(spacing: 10) {
             PrimaryButton(text: "Sign In") {
-                isPresentHome.toggle()
+                isPresentTabbar.toggle()
             }
             
             Text("OR")
