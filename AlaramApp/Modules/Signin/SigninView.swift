@@ -35,7 +35,7 @@ struct SigninView: View {
                     ForgotPasswordView(path: $path)
                     
                 case .signup:
-                    SignupView(path: $path)
+                    SignupView(path: $path, supabase: .shared)
                 }
             })
         }
@@ -57,7 +57,7 @@ extension SigninView {
                             .font(.getFont(.semiBold, size: 30))
                             .foregroundStyle(.white)
                         
-                        Text("Sign In and weak up on time and don’t be late.")
+                        Text("Sign In and wake up on time and don’t be late.")
                             .font(.getFont(.bold, size: 14))
                             .foregroundStyle(.white)
                     }
