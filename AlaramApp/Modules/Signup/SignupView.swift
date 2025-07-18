@@ -21,7 +21,7 @@ struct SignupView: View {
     @State private var isLoading = false
     @State private var showAlert = false
     @State private var alertMessage = ""
-    @State private var presentTabbar = false
+    @State private var isSignupSuccess = false
     
     let supabase: SupabaseManager
     
@@ -53,23 +53,21 @@ struct SignupView: View {
         }
         .alert(alertMessage, isPresented: $showAlert) {
             Button("OK", role: .cancel) {
-                if alertMessage == "Signup Successfull" {
+                if isSignupSuccess {
                     name = ""
                     email = ""
                     language = ""
                     password = ""
                     confirmPassword = ""
-                    presentTabbar = true
+                    self.path.removeLast()
                 }
             }
         }
-        .fullScreenCover(isPresented: $presentTabbar, content: {
-            TabbarView()
-        })
         .ignoresSafeArea(edges: .all)
     }
 }
 
+// MARK: - UI Methods
 extension SignupView {
     func getTopView() -> some View {
         Rectangle().fill(.clear)
@@ -142,31 +140,24 @@ extension SignupView {
     }
 }
 
+// MARK: - API Calls
 extension SignupView {
     func callSignup() {
-        isLoading = true
         Task {
-            do {
-                try await supabase.getAuth().signUp(
-                    email: email,
-                    password: password,
-                    data: [
-                        "name": .string(name),
-                        "language": .string(language)
-                    ]
-                )
-                isLoading = false
-                alertMessage = "Signup Successfull"
-            } catch {
-                print(error)
-                alertMessage = error.localizedDescription
-                isLoading = false
+            isLoading = true
+            let success = await supabase.signUp(email: email, password: password, name: name, language: language)
+            self.isSignupSuccess = success
+            if let errorMessage = supabase.errorMessage {
+                alertMessage = errorMessage
+            } else {
+                self.alertMessage = "Account Created"
             }
+            isLoading = false
         }
-        
     }
 }
 
+// MARK: - Methods
 extension SignupView {
     func validateFields() -> Bool {
         if name.isEmpty {

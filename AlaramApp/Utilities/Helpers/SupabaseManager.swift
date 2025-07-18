@@ -27,6 +27,27 @@ class SupabaseManager {
         return supabase.auth
     }
     
+    func signUp(email: String, password: String, name: String, language: String) async -> Bool {
+        errorMessage = nil
+        do {
+            let session = try await supabase.auth.signUp(
+                email: email,
+                password: password,
+                data: [
+                    "name": .string(name),
+                    "language": .string(language)
+                ]
+            )
+            self.user = session.user
+            self.errorMessage = nil
+            return true
+        } catch {
+            self.user = nil
+            self.errorMessage = error.localizedDescription
+            return false
+        }
+    }
+    
     func signIn(email: String, password: String) async -> Bool {
         errorMessage = nil
         do {
