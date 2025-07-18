@@ -39,27 +39,33 @@ struct OnboardingView: View {
             
             VStack(spacing: 10) {
                 PrimaryButton(text: selectedTab == 2 ? "Finish" : "Next") {
-                    if selectedTab != 2 {
-                        selectedTab += 1
-                    } else {
-                        viewModel.updateState()
+                    withAnimation {
+                        if selectedTab != 2 {
+                            selectedTab += 1
+                        } else {
+                            viewModel.updateState()
+                        }
                     }
                 }
                 
                 if selectedTab == 2 {
-                    Rectangle()
-                        .fill(.clear)
-                        .frame(height: 25)
+                    withAnimation {
+                        Rectangle()
+                            .fill(.clear)
+                            .frame(height: 26)
+                    }
                     
                 } else {
-                    Button {
-                        viewModel.updateState()
-                    } label: {
-                        Text("Skip")
-                            .font(Font.getFont(.bold, size: 16))
-                            .foregroundStyle(Color(.custom2D2D40))
+                    withAnimation {
+                        Button {
+                            viewModel.updateState()
+                        } label: {
+                            Text("Skip")
+                                .font(Font.getFont(.bold, size: 16))
+                                .foregroundStyle(Color(.custom2D2D40))
+                        }
+                        .frame(height: 26)
                     }
-                    .frame(height: 26)
                 }
                 
             }
