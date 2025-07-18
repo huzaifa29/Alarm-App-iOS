@@ -15,17 +15,29 @@ struct OnboardingView: View {
     var data: [Onboarding]
     
     var body: some View {
-        VStack(spacing: 20) {
-            TabView(selection: $selectedTab) {
-                ForEach(0 ..< data.count) { index in
-                    OnboardingItemView(item: data[index])
-                        .tag(index)
-                }
-            }
-            .tabViewStyle(.page)
-//            .indexViewStyle(.page(backgroundDisplayMode: .always))
+        VStack(spacing: 10) {
             
             VStack(spacing: 20) {
+                TabView(selection: $selectedTab) {
+                    ForEach(0..<data.count, id: \.self) { index in
+                        OnboardingItemView(item: data[index])
+                            .tag(index)
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .animation(.easeInOut, value: selectedTab)
+                
+                HStack(spacing: 8) {
+                    ForEach(0..<data.count, id: \.self) { index in
+                        Capsule()
+                            .fill(index == selectedTab ? Color(.customA067D0) : Color(.customD8C0E6))
+                            .frame(width: index == selectedTab ? 37 : 10, height: 3)
+                            .animation(.spring(), value: selectedTab)
+                    }
+                }
+            }
+            
+            VStack(spacing: 10) {
                 PrimaryButton(text: selectedTab == 2 ? "Finish" : "Next") {
                     if selectedTab != 2 {
                         selectedTab += 1
