@@ -61,6 +61,7 @@ struct SignupView: View {
                     confirmPassword = ""
                     self.path.removeLast()
                 }
+                alertMessage = ""
             }
         }
         .ignoresSafeArea(edges: .all)
@@ -160,20 +161,20 @@ extension SignupView {
 // MARK: - Methods
 extension SignupView {
     func validateFields() -> Bool {
-        if name.isEmpty {
-            alertMessage = "Enter Name"
+        if let name = name.isValid(for: .requiredField(field: "Name")) {
+            alertMessage = name
             return false
         }
-        if email.isEmpty {
-            alertMessage = "Enter Email"
+        if let emailError = email.isValid(for: .email) {
+            alertMessage = emailError
             return false
         }
-        if password.isEmpty {
-            alertMessage = "Enter Password"
+        if let passwordError = password.isValid(for: .requiredField(field: "Password")) {
+            alertMessage = passwordError
             return false
         }
-        if confirmPassword.isEmpty {
-            alertMessage = "Enter Password"
+        if let confirmPasswordError = confirmPassword.isValid(for: .requiredField(field: "Confirm Password")) {
+            alertMessage = confirmPasswordError
             return false
         }
         if password != confirmPassword {

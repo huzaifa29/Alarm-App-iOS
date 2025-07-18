@@ -45,6 +45,7 @@ struct SigninView: View {
             }
             .alert(alertMessage, isPresented: $showAlert) {
                 Button("OK", role: .cancel) {
+                    alertMessage = ""
                 }
             }
             .fullScreenCover(isPresented: $isPresentTabbar) {
@@ -169,12 +170,12 @@ extension SigninView {
 // MARK: - Methods
 extension SigninView {
     func validateFields() -> Bool {
-        if email.isEmpty {
-            alertMessage = "Enter Email"
+        if let emailError = email.isValid(for: .email) {
+            alertMessage = emailError
             return false
         }
-        if password.isEmpty {
-            alertMessage = "Enter Password"
+        if let passwordError = password.isValid(for: .requiredField(field: "Password")) {
+            alertMessage = passwordError
             return false
         }
         return true

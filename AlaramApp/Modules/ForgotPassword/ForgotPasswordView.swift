@@ -52,6 +52,7 @@ struct ForgotPasswordView: View {
                 if isResetPasswordSuccess {
                     self.path.removeLast()
                 }
+                alertMessage = ""
             }
         }
         .navigationBarHidden(true)
@@ -107,8 +108,8 @@ extension ForgotPasswordView {
 // MARK: - Methods
 extension ForgotPasswordView {
     func validateFields() -> Bool {
-        if email.isEmpty {
-            alertMessage = "Enter Email"
+        if let emailError = email.isValid(for: .email) {
+            alertMessage = emailError
             return false
         }
         return true
