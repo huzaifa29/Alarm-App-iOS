@@ -18,10 +18,9 @@ struct TabBarButton: View {
             }
         } label: {
             VStack(spacing: 4) {
-                Image(tab.icon)
+                Image(selectedTab == tab ? tab.selectedIcon : tab.icon)
                     .resizable()
                     .frame(width: 24, height: 24)
-                    .foregroundStyle(selectedTab == tab ? .customFF7FAA : .custom2D2D40)
                 
                 Text(tab.title)
                     .font(.getFont(.bold, size: 12))

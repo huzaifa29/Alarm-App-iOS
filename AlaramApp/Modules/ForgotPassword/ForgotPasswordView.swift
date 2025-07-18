@@ -24,7 +24,7 @@ struct ForgotPasswordView: View {
                 getTopView()
                 
                 VStack(spacing: 20) {
-                    PrimaryTextField(icon: "ic_email", placeholder: "Enter verified Email Address", text: $email)
+                    PrimaryTextField(icon: "ic_email", placeholder: "Enter verified Email Address", text: $email, keyboardType: .emailAddress)
                     PrimaryButton(text: "Send") {
                         if validateFields() {
                             self.callResetPassword()

@@ -12,8 +12,15 @@ enum Tab: Int, CaseIterable {
     
     var icon: String {
         switch self {
-        case .home: return "ic_home_selected"
+        case .home: return "ic_home_tab"
         case .alarm: return "ic_clock_tab"
+        }
+    }
+    
+    var selectedIcon: String {
+        switch self {
+        case .home: return "ic_home_tab_selected"
+        case .alarm: return "ic_clock_tab_selected"
         }
     }
     

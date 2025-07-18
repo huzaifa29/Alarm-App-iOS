@@ -93,7 +93,7 @@ extension SigninView {
     
     func getTextFields() -> some View {
         VStack(spacing: 20) {
-            PrimaryTextField(icon: "ic_email", placeholder: "Enter Email Address", text: $email)
+            PrimaryTextField(icon: "ic_email", placeholder: "Enter Email Address", text: $email, keyboardType: .emailAddress)
             PrimaryTextField(icon: "ic_lock", placeholder: "Enter Password", text: $password, fieldType: .secure, isSecureToggleEnabled: true)
             Button {
                 self.path.append(.forgotPassword)

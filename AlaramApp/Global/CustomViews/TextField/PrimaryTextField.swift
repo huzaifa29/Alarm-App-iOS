@@ -16,6 +16,7 @@ struct PrimaryTextField: View {
     var placeholder: String
     @Binding var text: String
     var fieldType: FieldType = .normal
+    var keyboardType: UIKeyboardType = .default
     var isSecureToggleEnabled: Bool = false
     
     @State private var isSecure: Bool = true
@@ -30,21 +31,25 @@ struct PrimaryTextField: View {
                 Group {
                     if isSecure {
                         SecureField(placeholder, text: $text)
+                            .keyboardType(keyboardType)
                     } else {
                         TextField(placeholder, text: $text)
+                            .keyboardType(keyboardType)
                     }
                 }
             } else if fieldType == .secure {
                 SecureField(placeholder, text: $text)
+                    .keyboardType(keyboardType)
             } else {
                 TextField(placeholder, text: $text)
+                    .keyboardType(keyboardType)
             }
             
             if fieldType == .secure && isSecureToggleEnabled {
                 Button(action: {
                     isSecure.toggle()
                 }) {
-                    Image(systemName: isSecure ? "eye" : "eye.slash")
+                    Image(isSecure ? "ic_eye" : "ic_eye_slash")
                         .foregroundColor(Color.purple.opacity(0.7))
                 }
             }

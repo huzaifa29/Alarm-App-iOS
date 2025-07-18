@@ -95,7 +95,7 @@ extension SignupView {
     func getTextFields() -> some View {
         VStack(spacing: 20) {
             PrimaryTextField(icon: "ic_person", placeholder: "Enter Name", text: $name)
-            PrimaryTextField(icon: "ic_email", placeholder: "Enter Email Address", text: $email)
+            PrimaryTextField(icon: "ic_email", placeholder: "Enter Email Address", text: $email, keyboardType: .emailAddress)
             PrimaryTextField(icon: "ic_language", placeholder: "Select Language", text: $language)
             PrimaryTextField(icon: "ic_lock", placeholder: "Enter Password", text: $password, fieldType: .secure, isSecureToggleEnabled: true)
             PrimaryTextField(icon: "ic_lock", placeholder: "Confirm Password", text: $confirmPassword, fieldType: .secure, isSecureToggleEnabled: true)
