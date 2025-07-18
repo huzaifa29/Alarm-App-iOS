@@ -27,7 +27,7 @@ struct OnboardingView: View {
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .animation(.easeInOut, value: selectedTab)
                 
-                HStack(spacing: 8) {
+                HStack(spacing: 5) {
                     ForEach(0..<data.count, id: \.self) { index in
                         Capsule()
                             .fill(index == selectedTab ? Color(.customA067D0) : Color(.customD8C0E6))
