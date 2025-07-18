@@ -11,18 +11,48 @@ struct ForgotPasswordView: View {
     @Binding var path: [AuthRoute]
     
     @State private var email = ""
+    @State private var isLoading = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    @State private var isResetPasswordSuccess = false
+    
+    let supabase: SupabaseManager
     
     var body: some View {
-        VStack(spacing: 0) {
-            getTopView()
-            
-            VStack(spacing: 20) {
-                PrimaryTextField(icon: "ic_email", placeholder: "Enter verified Email Address", text: $email)
-                PrimaryButton(text: "Send")
+        ZStack {
+            VStack(spacing: 0) {
+                getTopView()
+                
+                VStack(spacing: 20) {
+                    PrimaryTextField(icon: "ic_email", placeholder: "Enter verified Email Address", text: $email)
+                    PrimaryButton(text: "Send") {
+                        if validateFields() {
+                            self.callResetPassword()
+                        }
+                    }
+                }
+                .padding(.all, 20)
+                
+                Spacer()
             }
-            .padding(.all, 20)
             
-            Spacer()
+            if isLoading {
+                LoaderView()
+            }
+        }
+        .onChange(of: alertMessage) {
+            if !alertMessage.isEmpty {
+                showAlert =  true
+            } else {
+                showAlert = false
+            }
+        }
+        .alert(alertMessage, isPresented: $showAlert) {
+            Button("OK", role: .cancel) {
+                if isResetPasswordSuccess {
+                    self.path.removeLast()
+                }
+            }
         }
         .navigationBarHidden(true)
         .ignoresSafeArea(edges: .all)
@@ -30,6 +60,7 @@ struct ForgotPasswordView: View {
     }
 }
 
+// MARK: - UI Methods
 extension ForgotPasswordView {
     func getTopView() -> some View {
         Rectangle().fill(.clear)
@@ -55,6 +86,35 @@ extension ForgotPasswordView {
     }
 }
 
+// MARK: - API Calls
+extension ForgotPasswordView {
+    func callResetPassword() {
+        Task {
+            isLoading = true
+            let success = await supabase.resetPassword(email: email)
+            isResetPasswordSuccess = success
+            if let errorMessage = supabase.errorMessage {
+                alertMessage = errorMessage
+            } else {
+                alertMessage = "Reset Password Link Sent"
+            }
+            isLoading = false
+        }
+        
+    }
+}
+
+// MARK: - Methods
+extension ForgotPasswordView {
+    func validateFields() -> Bool {
+        if email.isEmpty {
+            alertMessage = "Enter Email"
+            return false
+        }
+        return true
+    }
+}
+
 #Preview {
-    ForgotPasswordView(path: .constant([]))
+    ForgotPasswordView(path: .constant([]), supabase: .shared)
 }

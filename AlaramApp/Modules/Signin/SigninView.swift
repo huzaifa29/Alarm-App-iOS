@@ -55,7 +55,7 @@ struct SigninView: View {
             .navigationDestination(for: AuthRoute.self, destination: { route in
                 switch route {
                 case .forgotPassword:
-                    ForgotPasswordView(path: $path)
+                    ForgotPasswordView(path: $path, supabase: .shared)
                     
                 case .signup:
                     SignupView(path: $path, supabase: .shared)

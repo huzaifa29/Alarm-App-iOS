@@ -61,4 +61,15 @@ class SupabaseManager {
             return false
         }
     }
+    
+    func resetPassword(email: String) async -> Bool {
+        do {
+            try await supabase.auth.resetPasswordForEmail(email)
+            self.errorMessage = nil
+            return true
+        } catch {
+            self.errorMessage = error.localizedDescription
+            return false
+        }
+    }
 }
