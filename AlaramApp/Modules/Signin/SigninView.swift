@@ -12,17 +12,40 @@ struct SigninView: View {
     @State private var password = ""
     @State private var path = [AuthRoute]()
     @State private var isPresentTabbar = false
+    @State private var isLoading = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    
+    let supabase: SupabaseManager
     
     var body: some View {
         NavigationStack(path: $path) {
-            VStack(spacing: 0) {
-                getTopView()
-                getTextFields()
-                    .padding(.top, 20)
-                getBottomView()
-                    .padding(.vertical, 20)
+            ZStack {
                 
-                Spacer()
+                VStack(spacing: 0) {
+                    getTopView()
+                    getTextFields()
+                        .padding(.top, 20)
+                    getBottomView()
+                        .padding(.vertical, 20)
+                    
+                    Spacer()
+                }
+                
+                if isLoading {
+                    LoaderView()
+                }
+            }
+            .onChange(of: alertMessage) {
+                if !alertMessage.isEmpty {
+                    showAlert =  true
+                } else {
+                    showAlert = false
+                }
+            }
+            .alert(alertMessage, isPresented: $showAlert) {
+                Button("OK", role: .cancel) {
+                }
             }
             .fullScreenCover(isPresented: $isPresentTabbar) {
                 TabbarView()
@@ -43,6 +66,7 @@ struct SigninView: View {
     }
 }
 
+// MARK: - UI Methods
 extension SigninView {
     func getTopView() -> some View {
         Rectangle().fill(.clear)
@@ -92,7 +116,9 @@ extension SigninView {
     func getBottomView() -> some View {
         VStack(spacing: 10) {
             PrimaryButton(text: "Sign In") {
-                isPresentTabbar.toggle()
+                if validateFields() {
+                    self.callSignIn()
+                }
             }
             
             Text("OR")
@@ -124,6 +150,37 @@ extension SigninView {
     }
 }
 
+// MARK: - API Calls
+extension SigninView {
+    func callSignIn() {
+        Task {
+            isLoading = true
+            let success = await supabase.signIn(email: email, password: password)
+            isPresentTabbar = success
+            if let errorMessage = supabase.errorMessage {
+                alertMessage = errorMessage
+            }
+            isLoading = false
+        }
+        
+    }
+}
+
+// MARK: - Methods
+extension SigninView {
+    func validateFields() -> Bool {
+        if email.isEmpty {
+            alertMessage = "Enter Email"
+            return false
+        }
+        if password.isEmpty {
+            alertMessage = "Enter Password"
+            return false
+        }
+        return true
+    }
+}
+
 #Preview {
-    SigninView()
+    SigninView(supabase: .shared)
 }

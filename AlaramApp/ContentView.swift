@@ -29,7 +29,7 @@ func getViewForState(viewModel: AuthViewModelImpl) -> some View {
         OnboardingView(data: Onboarding.data)
             .transition(.asymmetric(insertion: .opacity, removal: .move(edge: .leading)))
     case .signin:
-        SigninView()
+        SigninView(supabase: .shared)
             .transition(.asymmetric(insertion: .opacity, removal: .move(edge: .leading)))
     }
 }

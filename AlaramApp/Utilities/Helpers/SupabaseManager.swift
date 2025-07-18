@@ -16,11 +16,28 @@ class SupabaseManager {
     
     static let shared = SupabaseManager()
     
+    var user: User?
+    var errorMessage: String?
+    
     fileprivate init() {
         supabase = SupabaseClient(supabaseURL: URL(string: url)!, supabaseKey: apiKey)
     }
     
     func getAuth() -> AuthClient {
         return supabase.auth
+    }
+    
+    func signIn(email: String, password: String) async -> Bool {
+        errorMessage = nil
+        do {
+            let session = try await supabase.auth.signIn(email: email, password: password)
+            self.user = session.user
+            self.errorMessage = nil
+            return true
+        } catch {
+            self.user = nil
+            self.errorMessage = error.localizedDescription
+            return false
+        }
     }
 }
