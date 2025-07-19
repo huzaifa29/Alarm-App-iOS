@@ -13,12 +13,12 @@ struct HorizontalDatePicker: View {
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
+            HStack(spacing: 10) {
                 ForEach(dateRange, id: \.self) { date in
                     dateButton(for: date)
+                        .padding(.vertical, 30)
                 }
             }
-            .padding(.horizontal)
         }
         .frame(height: 66)
     }
@@ -41,13 +41,73 @@ struct HorizontalDatePicker: View {
             }
             .frame(width: 46, height: 66)
             .background(
-                Capsule()
-                    .fill(isSelected ? .red : (Color(.customFFEBF7)))
+                Group {
+                    if isSelected {
+                        getSelectedBackgroundView()
+                            .padding(.vertical, 30)
+                    } else {
+                        Capsule()
+                            .fill((Color(.customFFEBF7)))
+                    }
+                }
             )
         }
         .buttonStyle(.plain)
     }
     
+}
+
+extension HorizontalDatePicker {
+    func getSelectedBackgroundView() -> some View {
+        ZStack {
+            // Outer shadow (glow)
+            Capsule()
+                .fill(Color.clear)
+                .background(
+                    Capsule()
+                        .fill(Color(.customF5C1FF).opacity(0.7))
+                        .blur(radius: 15.3)
+                        .offset(y: 15) // mimic 15px shadow with ~7pt offset
+                )
+                .frame(width: 46, height: 66)
+            
+            // Main capsule with background + inset inner glow + border
+            Capsule()
+                .fill(
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            Color(.customABA3F4),
+                            Color(.customF5B3FF)
+                        ]),
+                        startPoint: .init(x: 0.17, y: 0), // ~199.07°
+                        endPoint: .bottom
+                    )
+                )
+                .overlay(
+                    Capsule()
+                        .strokeBorder(
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    Color(.customF6C5FE),
+                                    Color.white
+                                ]),
+                                startPoint: .top,
+                                endPoint: .bottom
+                            ),
+                            lineWidth: 1
+                        )
+                )
+            // Inset shadow simulation (white glow inside top-left)
+                .overlay(
+                    Capsule()
+                        .stroke(Color.white.opacity(0.5), lineWidth: 7)
+                        .blur(radius: 7)
+                        .offset(x: -6, y: 6)
+                        .mask(Capsule())
+                )
+                .frame(width: 46, height: 66)
+        }
+    }
 }
 
 extension Date {
