@@ -117,10 +117,9 @@ extension SigninView {
     func getBottomView() -> some View {
         VStack(spacing: 10) {
             PrimaryButton(text: "Sign In") {
-                isPresentTabbar = true
-//                if validateFields() {
-//                    self.callSignIn()
-//                }
+                if validateFields() {
+                    self.callSignIn()
+                }
             }
             
             Text("OR")
