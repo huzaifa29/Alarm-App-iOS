@@ -28,14 +28,14 @@ struct HomeView: View {
                 
                 Spacer()
             }
-            .onAppear {
-                self.path.removeAll()
-            }
             .navigationBarHidden(true)
             .navigationDestination(for: HomeRoute.self, destination: { route in
                 switch route {
                 case .selectAlarmType:
-                    SelectAlarmTypeView()
+                    SelectAlarmTypeView(path: $path)
+                    
+                case .musicLibrary:
+                    MusicLibraryView(path: $path)
                 }
             })
 

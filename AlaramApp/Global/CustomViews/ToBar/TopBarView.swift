@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-struct TopBarView: View {
-    @Environment(\.presentationMode) var presentationMode
+struct TopBarView<Screen: Hashable>: View {
+    @Binding var path: [Screen]
     
     var title: String?
     
     var body: some View {
         HStack(spacing: 15) {
             Button {
-                presentationMode.wrappedValue.dismiss()
+                path.removeLast()
             } label: {
                 Image(.icBack)
                     .resizable()
@@ -35,5 +35,5 @@ struct TopBarView: View {
 }
 
 #Preview {
-    TopBarView(title: "Test")
+    TopBarView<HomeRoute>(path: .constant([]), title: "Test")
 }

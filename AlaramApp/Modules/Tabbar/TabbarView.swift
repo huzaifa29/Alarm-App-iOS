@@ -18,7 +18,7 @@ struct TabbarView: View {
                 switch selectedTab {
                 case .home:
                     HomeView(path: $path)
-                        .padding(.bottom, 90)
+                        .padding(.bottom, path.count == 0 ? 90 : 0)
                     
                 case .alarm:
                     Text("Alarm View")
