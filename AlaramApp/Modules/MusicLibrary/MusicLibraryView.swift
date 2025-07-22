@@ -42,6 +42,9 @@ struct MusicLibraryView: View {
             .padding(.all, 20)
             
             PrimaryButton(text: isSelected ? "Next" : "Select Music") {
+                if isSelected {
+                    self.path.append(.createAlarm)
+                }
                 
             }
             .padding([.horizontal, .trailing], 20)

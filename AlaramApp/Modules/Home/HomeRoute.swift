@@ -10,4 +10,5 @@ import Foundation
 enum HomeRoute: Hashable {
     case selectAlarmType
     case musicLibrary
+    case createAlarm
 }
