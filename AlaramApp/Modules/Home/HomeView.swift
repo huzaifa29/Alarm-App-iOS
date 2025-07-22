@@ -8,22 +8,37 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Binding var path: [HomeRoute]
+    
     @State private var selectedDate = Date()
     
     var body: some View {
-        VStack(spacing: 0) {
-            getTopView()
-            
-            ScrollView {
-                VStack(spacing: 20) {
-                    getDatePickerSection()
-                    getAlarmDataSection()
-                    getSubcriptionSection()
-                    getListAlarmSection()
+        NavigationStack(path: $path) {
+            VStack(spacing: 0) {
+                getTopView()
+                
+                ScrollView {
+                    VStack(spacing: 20) {
+                        getDatePickerSection()
+                        getAlarmDataSection()
+                        getSubcriptionSection()
+                        getListAlarmSection()
+                    }
                 }
+                
+                Spacer()
             }
-            
-            Spacer()
+            .onAppear {
+                self.path.removeAll()
+            }
+            .navigationBarHidden(true)
+            .navigationDestination(for: HomeRoute.self, destination: { route in
+                switch route {
+                case .selectAlarmType:
+                    SelectAlarmTypeView()
+                }
+            })
+
         }
     }
 }
@@ -52,7 +67,7 @@ extension HomeView {
         VStack(spacing: 20) {
             HorizontalDatePicker(selectedDate: $selectedDate, dateRange: Date.nextNDays(14))
             PrimaryButton(leftIcon: "ic_add", text: "Create New Alarm", iconSpacing: 0) {
-                print("Create New Alaram tapped")
+                self.path.append(.selectAlarmType)
             }
             .padding(.horizontal, 20)
         }
@@ -238,5 +253,5 @@ extension HomeView {
 }
 
 #Preview {
-    HomeView()
+    HomeView(path: .constant([]))
 }
