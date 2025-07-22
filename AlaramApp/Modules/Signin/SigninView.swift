@@ -127,7 +127,11 @@ extension SigninView {
                 .foregroundStyle(Color(.custom2D2D40))
                 .frame(height: 28)
             
-            PrimaryButton(leftIcon: "ic_google", text: "Sign In With Google")
+            PrimaryButton(leftIcon: "ic_google", text: "Sign In With Google") {
+                Task {
+                    await supabase.signInWithGoogle()
+                }
+            }
             
             Spacer()
             
