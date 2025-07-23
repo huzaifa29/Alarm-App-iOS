@@ -1,13 +1,13 @@
 //
-//  PreviewAlarmView.swift
+//  SetAlarmView.swift
 //  AlaramApp
 //
-//  Created by Hafiz Muhammad Junaid on 23/07/2025.
+//  Created by Hafiz Muhammad Junaid on 24/07/2025.
 //
 
 import SwiftUI
 
-struct PreviewAlarmView: View {
+struct SetAlarmView: View {
     @Binding var path: [HomeRoute]
     
     var body: some View {
@@ -15,9 +15,18 @@ struct PreviewAlarmView: View {
             PrimaryBackground()
             
             VStack(spacing: 0) {
-                TopBarView(path: $path, title: "Preview Alarm")
+                TopBarView(path: $path, title: "You are all set !")
                 
                 VStack(alignment: .leading, spacing: 20) {
+                    HStack {
+                        Spacer()
+                        Image(.sun)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 183, height: 183)
+                        Spacer()
+                    }
+                    
                     Text("Morning Wake Up")
                         .font(.getFont(.bold, size: 20))
                         .foregroundStyle(.custom2D2D40)
@@ -71,15 +80,34 @@ struct PreviewAlarmView: View {
                     )
                     .frame(height: 77)
                     
-                    FrequencyView(title: "Repeat On")
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Repeat On")
+                            .font(.getFont(.semiBold, size: 20))
+                            .foregroundStyle(.custom2D2D40)
+                            .frame(height: 32)
+                        
+                        Text("Monday, Tuesday, Wednesday")
+                            .font(.getFont(.medium, size: 14))
+                            .foregroundStyle(.custom2D2D40)
+                            .frame(height: 24)
+                    }
+                    
+                    HStack {
+                        Spacer()
+                        Text("Just tap 'Set Alarm' and relax — the Alarm app will handle the rest!")
+                            .multilineTextAlignment(.center)
+                            .font(.getFont(.medium, size: 14))
+                            .foregroundStyle(.custom9A6C8D)
+                        Spacer()
+                    }
                 }
                 .padding(.top, 30)
                 .padding(.horizontal, 20)
                 
                 Spacer()
                 
-                PrimaryButton(text: "Save Details") {
-                    self.path.append(.setAlarm)
+                PrimaryButton(text: "Set Alarm") {
+                    print("Set Alarm Tap")
                 }
                 .padding([.horizontal, .top], 20)
             }
@@ -89,5 +117,5 @@ struct PreviewAlarmView: View {
 }
 
 #Preview {
-    PreviewAlarmView(path: .constant([]))
+    SetAlarmView(path: .constant([]))
 }

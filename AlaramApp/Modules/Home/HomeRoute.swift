@@ -12,4 +12,5 @@ enum HomeRoute: Hashable {
     case musicLibrary
     case createAlarm
     case previewAlarm
+    case setAlarm
 }
