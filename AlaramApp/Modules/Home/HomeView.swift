@@ -39,6 +39,9 @@ struct HomeView: View {
                     
                 case .createAlarm:
                     CreateAlarmView(path: $path)
+                    
+                case .previewAlarm:
+                    PreviewAlarmView(path: $path)
                 }
             })
 

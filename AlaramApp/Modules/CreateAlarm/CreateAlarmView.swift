@@ -16,8 +16,7 @@ struct CreateAlarmView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.customFFF5FB, .customFFF5FB]), startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea(edges: .all)
+            PrimaryBackground()
             
             VStack(spacing: 0) {
                 TopBarView<HomeRoute>(path: $path)
@@ -51,7 +50,7 @@ struct CreateAlarmView: View {
                 case 1:
                     EmptyView()
                 case 2:
-                    DetailView()
+                    DetailView(path: $path)
                     
                 default:
                     EmptyView()

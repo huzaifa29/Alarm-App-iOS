@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct DetailView: View {
+    @Binding var path: [HomeRoute]
+    
     @State private var alarmName: String = ""
     
     var body: some View {
@@ -40,7 +42,7 @@ struct DetailView: View {
             Spacer()
             
             PrimaryButton(text: "Save Details") {
-                print("Save Details Tap")
+                self.path.append(.previewAlarm)
             }
             .padding(.top, 20)
             
@@ -50,5 +52,5 @@ struct DetailView: View {
 }
 
 #Preview {
-    DetailView()
+    DetailView(path: .constant([]))
 }
