@@ -8,8 +8,44 @@
 import SwiftUI
 
 struct DetailView: View {
+    @State private var alarmName: String = ""
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Finalize your alarm")
+                .font(.getFont(.bold, size: 20))
+                .foregroundStyle(.custom2D2D40)
+            
+            TextField("Name your alarm here", text: $alarmName)
+                .font(.getFont(.medium, size: 14))
+                .foregroundStyle(.customCDA9C3)
+                .padding(.horizontal, 15)
+                .padding(.top, 11)
+                .padding(.bottom, 18)
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(.customFFF6FB)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(LinearGradient(colors: [.white.opacity(0), .white, .white.opacity(0)], startPoint: .top, endPoint: .bottom), lineWidth: 1.5)
+                        )
+                )
+                .frame(height: 53)
+                .shadow(color: .black.opacity(0.10), radius: 14, x: 0, y: 0)
+            
+            FrequencyView(title: "Frequency model")
+            
+            FrequencyView(title: "Repeat on")
+            
+            Spacer()
+            
+            PrimaryButton(text: "Save Details") {
+                print("Save Details Tap")
+            }
+            .padding(.top, 20)
+            
+        }
+        .padding([.horizontal, .top], 20)
     }
 }
 

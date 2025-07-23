@@ -24,11 +24,7 @@ struct AlarmItemView: View {
                 CustomToggle(isOn: $isToggleOn, onColor: .white, offColor: .white, knobColor: .white)
             }
             
-            Text("06:30 AM")
-                .font(.getFont(.bold, size: 16))
-                .foregroundStyle(.custom433261)
-            
-            getOptions()
+            FrequencyView(title: "06:30 AM", titleFont: .getFont(.bold, size: 16), titleColor: .custom433261, titleHeight: 26)
             
             HStack(spacing: 10) {
                 Image("ic_music")
@@ -56,42 +52,6 @@ struct AlarmItemView: View {
 }
 
 extension AlarmItemView {
-    func getOptions() -> some View {
-        LazyVGrid(columns: columns, alignment: .leading, spacing: 10) {
-            ForEach(0..<5) { index in
-                Text("Every Day")
-                    .font(.getFont(.medium, size: 12))
-                    .foregroundStyle(.custom9A6C8D)
-                    .lineLimit(1)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(
-                        Capsule()
-                            .fill(
-                                LinearGradient(
-                                    colors: [.customEBE1ED.opacity(0.40), .customF4BDFF],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                            )
-                    )
-                    .overlay(
-                        Capsule()
-                            .strokeBorder(
-                                LinearGradient(
-                                    colors: [
-                                        Color(.customF1DEF4),
-                                        Color.white
-                                    ],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                ),
-                                lineWidth: 1
-                            )
-                    )
-            }
-        }
-    }
     
     func getButton() -> some View {
         ZStack {

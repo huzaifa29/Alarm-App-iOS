@@ -15,9 +15,13 @@ struct CreateAlarmView: View {
     let options = ["Time", "Voice", "Detail"]
     
     var body: some View {
-        VStack(spacing: 0) {
-            TopBarView<HomeRoute>(path: $path)
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [.customFFF5FB, .customFFF5FB]), startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea(edges: .all)
             
+            VStack(spacing: 0) {
+                TopBarView<HomeRoute>(path: $path)
+                
                 HStack {
                     Text("Create Alarm")
                         .font(.getFont(.bold, size: 20))
@@ -52,9 +56,10 @@ struct CreateAlarmView: View {
                 default:
                     EmptyView()
                 }
-            
-            Spacer()
-            
+                
+                Spacer()
+                
+            }
         }
         .navigationBarHidden(true)
     }
