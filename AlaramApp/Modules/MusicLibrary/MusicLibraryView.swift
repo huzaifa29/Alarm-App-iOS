@@ -11,20 +11,37 @@ import WaterfallGrid
 struct MusicLibraryView: View {
     @Binding var path: [HomeRoute]
     
-    @State var isSelected = false
+    @StateObject private var audioPlayer = AudioPlayer()
+    
     @State private var isLoading = false
     @State private var arrayMusic: [MusicModel] = []
+    @State private var selectedMusic: MusicModel? = nil
+    @State private var selectedId: String? = nil
     
     let supabase: SupabaseManager
     
     var body: some View {
         ZStack {
+            PrimaryBackground()
+            
             VStack(spacing: 0) {
                 TopBarView<HomeRoute>(path: $path, title: "Music Library")
                 
                 ScrollView {
                     WaterfallGrid(arrayMusic, id: \.self) { musicData in
-                        MusicItemView(musicData: musicData)
+                        MusicItemView(musicData: musicData, selectedId: selectedId)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                if let url = musicData.url, let audioURL = URL(string: url) {
+                                    self.selectedMusic = musicData
+                                    if audioPlayer.isPlaying && audioPlayer.url == audioURL {
+                                        audioPlayer.stopAudio()
+                                    } else {
+                                        audioPlayer.stopAudio()
+                                        audioPlayer.playAudio(from: audioURL)
+                                    }
+                                }
+                            }
                     }
                     .gridStyle(columns: 2,
                                spacing: 20)
@@ -32,9 +49,11 @@ struct MusicLibraryView: View {
                 }
                 .padding(.top, 22)
                 
-                PrimaryButton(text: isSelected ? "Next" : "Select Music") {
-                    if isSelected {
+                PrimaryButton(text: selectedId != nil ? "Next" : "Select Music") {
+                    if selectedId != nil {
                         self.path.append(.createAlarm)
+                    } else {
+                        selectedId = selectedMusic?.id
                     }
                     
                 }
@@ -48,6 +67,9 @@ struct MusicLibraryView: View {
         .onAppear {
             self.callGetMusic()
         }
+        .onDisappear {
+            audioPlayer.stopAudio()
+        }
         .navigationBarHidden(true)
     }
 }
@@ -58,10 +80,6 @@ extension MusicLibraryView {
         Task {
             isLoading = true
             self.arrayMusic = await supabase.fetchTable(table: "music", as: MusicModel.self) ?? []
-            print("✅ Fetched \(arrayMusic.count) songs:")
-            for music in arrayMusic {
-                print("🎵 \(music.name) by \(music.thumbnail)")
-            }
             self.isLoading = false
         }
     }

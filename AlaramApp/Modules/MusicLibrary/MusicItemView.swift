@@ -9,9 +9,9 @@ import SwiftUI
 
 struct MusicItemView: View {
     @State private var imageURL = URL(string: "assa")!
-    @State private var isSelected = false
     
     var musicData: MusicModel
+    var selectedId: String?
     
     var body: some View {
         ZStack {
@@ -60,7 +60,7 @@ struct MusicItemView: View {
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .overlay(
             Group {
-                if isSelected {
+                if selectedId == musicData.id {
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(lineWidth: 1.5)
                         .fill(Color.customE852FF)
