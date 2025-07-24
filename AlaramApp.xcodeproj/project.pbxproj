@@ -10,6 +10,7 @@
 		5012C6F72E291C1D00E0B10F /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 5012C6F62E291C1D00E0B10F /* Auth */; };
 		5012C6F92E291C1D00E0B10F /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 5012C6F82E291C1D00E0B10F /* Storage */; };
 		5012C6FB2E291C1D00E0B10F /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5012C6FA2E291C1D00E0B10F /* Supabase */; };
+		50ADD6912E328F44003EFAD1 /* WaterfallGrid in Frameworks */ = {isa = PBXBuildFile; productRef = 50ADD6902E328F44003EFAD1 /* WaterfallGrid */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5012C6F92E291C1D00E0B10F /* Storage in Frameworks */,
+				50ADD6912E328F44003EFAD1 /* WaterfallGrid in Frameworks */,
 				5012C6F72E291C1D00E0B10F /* Auth in Frameworks */,
 				5012C6FB2E291C1D00E0B10F /* Supabase in Frameworks */,
 			);
@@ -90,6 +92,7 @@
 				5012C6F62E291C1D00E0B10F /* Auth */,
 				5012C6F82E291C1D00E0B10F /* Storage */,
 				5012C6FA2E291C1D00E0B10F /* Supabase */,
+				50ADD6902E328F44003EFAD1 /* WaterfallGrid */,
 			);
 			productName = AlaramApp;
 			productReference = 507FF2982E25847F00B401D2 /* AlaramApp.app */;
@@ -121,6 +124,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				5012C6F52E291C1D00E0B10F /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				50ADD68F2E328F44003EFAD1 /* XCRemoteSwiftPackageReference "WaterfallGrid" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 507FF2992E25847F00B401D2 /* Products */;
@@ -362,6 +366,14 @@
 				minimumVersion = 2.5.1;
 			};
 		};
+		50ADD68F2E328F44003EFAD1 /* XCRemoteSwiftPackageReference "WaterfallGrid" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/paololeonardi/WaterfallGrid.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -379,6 +391,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5012C6F52E291C1D00E0B10F /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		50ADD6902E328F44003EFAD1 /* WaterfallGrid */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50ADD68F2E328F44003EFAD1 /* XCRemoteSwiftPackageReference "WaterfallGrid" */;
+			productName = WaterfallGrid;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -6,15 +6,10 @@
 //
 
 import SwiftUI
+import WaterfallGrid
 
 struct MusicLibraryView: View {
     @Binding var path: [HomeRoute]
-    
-    let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
-    
     @State var isSelected = false
     
     var body: some View {
@@ -22,24 +17,14 @@ struct MusicLibraryView: View {
             TopBarView<HomeRoute>(path: $path, title: "Music Library")
             
             ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(0..<10, id: \.self) { index in
-                        Rectangle()
-                            .fill(Color.custom2D2D40)
-                            .frame(height: 100)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                isSelected = true
-                            }
-                            .background(
-                                Rectangle()
-                                    .stroke(lineWidth: 1)
-                                    .fill(isSelected ? .pink : .clear)
-                            )
-                    }
+                WaterfallGrid(0..<30, id: \.self) { _ in
+                    MusicItemView(imageName: "song_image", title: "test")
                 }
+                .gridStyle(columns: 2,
+                           spacing: 20)
+                .padding()
             }
-            .padding(.all, 20)
+            .padding(.top, 22)
             
             PrimaryButton(text: isSelected ? "Next" : "Select Music") {
                 if isSelected {
@@ -47,7 +32,7 @@ struct MusicLibraryView: View {
                 }
                 
             }
-            .padding([.horizontal, .trailing], 20)
+            .padding(.all, 20)
         }
         .navigationBarHidden(true)
     }
