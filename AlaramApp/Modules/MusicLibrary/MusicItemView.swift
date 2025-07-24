@@ -8,52 +8,76 @@
 import SwiftUI
 
 struct MusicItemView: View {
-    let imageName: String
-    let title: String
-    let isSelected: Bool = false
+    @State private var imageURL = URL(string: "assa")!
+    @State private var isSelected = false
+    
+    var musicData: MusicModel
     
     var body: some View {
-        Image(imageName)
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-//            .frame(height: CGFloat.random(in: 86...227))
-            .frame(height: 200)
-            .cornerRadius(10)
-            .clipped()
-            .overlay(
-                ZStack {
-                    Image(.icPlay)
+        ZStack {
+            // Play icon
+            Image(.icPlay)
+                .resizable()
+                .frame(width: 52, height: 52)
+
+            // Bottom overlay
+            VStack {
+                Spacer()
+                HStack {
+                    Text(musicData.name ?? "")
+                        .font(.getFont(.regular, size: 12))
+                        .foregroundStyle(.white)
+                    Spacer()
+                }
+                .padding(.horizontal, 8)
+                .padding(.bottom, 9)
+            }
+        }
+        .background(
+            AsyncImage(url: imageURL) { phase in
+                switch phase {
+                case .empty:
+                    ProgressView()
+                    
+                case .success(let image):
+                    image
                         .resizable()
-                        .frame(width: 52, height: 52)
+                        .scaledToFill()
                     
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Text(title)
-                            Spacer()
-                        }
-                        .padding(.horizontal, 8)
-                        .padding(.bottom, 9)
-                    }
+                case .failure:
+                    Color.gray
+                        .overlay(
+                            Image(systemName: "photo")
+                                .foregroundColor(.white)
+                        )
                     
+                @unknown default:
+                    Color.clear
                 }
-                
-            )
-            .overlay(
-                Group {
-                    if isSelected {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(lineWidth: 1.5)
-                            .fill(.customE852FF)
-                            .padding(.all, -3)
-                    }
+            }
+        )
+        .frame(height: musicData.height)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .overlay(
+            Group {
+                if isSelected {
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(lineWidth: 1.5)
+                        .fill(Color.customE852FF)
+                        .padding(.all, -3)
                 }
-            )
+            }
+        )
+        .onAppear {
+            if let thumbnail = musicData.thumbnail, let url = URL(string: thumbnail) {
+                imageURL = url
+            }
+        }
     }
+
 }
 
-
 #Preview {
-    MusicItemView(imageName: "song_image", title: "Test")
+    MusicItemView(musicData: .init(id: "", name: "Test", url: "", thumbnail: ""))
 }
 

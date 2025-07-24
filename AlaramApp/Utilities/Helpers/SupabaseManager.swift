@@ -97,3 +97,22 @@ class SupabaseManager {
         }
     }
 }
+
+// MARK: - Tables
+extension SupabaseManager {
+    func fetchTable<T: Decodable>(table: String, as type: T.Type) async -> [T]? {
+        do {
+            let items: [T] = try await supabase
+                .database
+                .from(table)
+                .select()
+                .execute()
+                .value
+            self.errorMessage = nil
+            return items
+        } catch {
+            self.errorMessage = error.localizedDescription
+            return nil
+        }
+    }
+}

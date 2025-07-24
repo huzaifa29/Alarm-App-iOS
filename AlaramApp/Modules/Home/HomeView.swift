@@ -35,7 +35,7 @@ struct HomeView: View {
                     SelectAlarmTypeView(path: $path)
                     
                 case .musicLibrary:
-                    MusicLibraryView(path: $path)
+                    MusicLibraryView(path: $path, supabase: .shared)
                     
                 case .createAlarm:
                     CreateAlarmView(path: $path)
