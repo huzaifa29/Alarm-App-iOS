@@ -8,23 +8,45 @@
 import SwiftUI
 
 struct TimerPickerView: View {
+    @Binding var selectedHour: Int
+    @Binding var selectedMinute: Int
+    
+    @State private var isHourPickerPresented = false
+    @State private var isMinutePickerPresented = false
+
     var body: some View {
         HStack(spacing: 10) {
-            getTimeButton(title: "06")
+            getTimeButton(title: String(format: "%02d", selectedHour), isHour: true)
             
             Text(":")
                 .font(.getFont(.regular, size: 32))
                 .foregroundStyle(.black)
             
-            getTimeButton(title: "30")
+            getTimeButton(title: String(format: "%02d", selectedMinute), isHour: false)
+        }
+        .sheet(isPresented: $isHourPickerPresented) {
+            PickerSheetView(
+                title: "Select Hour",
+                range: 0..<24,
+                selection: $selectedHour
+            )
+        }
+        .sheet(isPresented: $isMinutePickerPresented) {
+            PickerSheetView(
+                title: "Select Minute",
+                range: 0..<60,
+                selection: $selectedMinute
+            )
         }
     }
-}
-
-extension TimerPickerView {
-    func getTimeButton(title: String) -> some View {
+    
+    func getTimeButton(title: String, isHour: Bool) -> some View {
         Button {
-            print("Tap")
+            if isHour {
+                isHourPickerPresented = true
+            } else {
+                isMinutePickerPresented = true
+            }
         } label: {
             HStack(spacing: 5) {
                 Text(title)
@@ -36,10 +58,7 @@ extension TimerPickerView {
                     .frame(width: 16, height: 16)
             }
             .frame(width: 95, height: 66)
-            .background(
-                getGradientBackground()
-            )
-            
+            .background(getGradientBackground())
         }
     }
     
@@ -72,5 +91,5 @@ extension TimerPickerView {
 }
 
 #Preview {
-    TimerPickerView()
+    TimerPickerView(selectedHour: .constant(6), selectedMinute: .constant(30))
 }

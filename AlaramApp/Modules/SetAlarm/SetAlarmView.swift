@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SetAlarmView: View {
     @Binding var path: [HomeRoute]
+    @State var selectedHour: Int = 6
+    @State var selectedMinute: Int = 30
     
     var body: some View {
         ZStack {
@@ -33,7 +35,7 @@ struct SetAlarmView: View {
                     
                     HStack {
                         Spacer()
-                        TimerPickerView()
+                        TimerPickerView(selectedHour: $selectedHour, selectedMinute: $selectedMinute)
                         Spacer()
                     }
                     
