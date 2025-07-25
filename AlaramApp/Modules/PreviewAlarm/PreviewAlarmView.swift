@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct PreviewAlarmView: View {
+    @State private var selectedHour: Int = 6
+    @State private var selectedMinute: Int = 30
+    @State private var arrayDays = [FrequencyData]()
+    
     @Binding var path: [HomeRoute]
-    @State var selectedHour: Int = 6
-    @State var selectedMinute: Int = 30
+    @State var alarmData: CreateAlarmModel
     
     var body: some View {
         ZStack {
@@ -40,7 +43,7 @@ struct PreviewAlarmView: View {
                                 .font(.getFont(.bold, size: 16))
                                 .foregroundStyle(.custom433261)
                             
-                            Text("Name of music/song here")
+                            Text(alarmData.musicData?.name ?? "")
                                 .font(.getFont(.medium, size: 14))
                                 .foregroundStyle(.custom433261)
                             
@@ -73,7 +76,7 @@ struct PreviewAlarmView: View {
                     )
                     .frame(height: 77)
                     
-                    FrequencyView(title: "Repeat On")
+                    FrequencyView(title: "Repeat On", arrayItems: $arrayDays, isMultiSelectionEnabled: true)
                 }
                 .padding(.top, 30)
                 .padding(.horizontal, 20)
@@ -81,9 +84,21 @@ struct PreviewAlarmView: View {
                 Spacer()
                 
                 PrimaryButton(text: "Save Details") {
-                    self.path.append(.setAlarm)
+                    self.path.append(.setAlarm(data: alarmData))
                 }
                 .padding([.horizontal, .top], 20)
+            }
+        }
+        .onAppear {
+            selectedHour = alarmData.hour
+            selectedMinute = alarmData.minute
+            
+            
+            if arrayDays.isEmpty {
+                for day in Days.allCases {
+                    let isSelected = alarmData.repeatDays.firstIndex(of: day) != nil
+                    arrayDays.append(.init(text: day.rawValue, isSelected: isSelected))
+                }
             }
         }
         .navigationBarHidden(true)
@@ -91,5 +106,5 @@ struct PreviewAlarmView: View {
 }
 
 #Preview {
-    PreviewAlarmView(path: .constant([]))
+    PreviewAlarmView(path: .constant([]), alarmData: .init())
 }

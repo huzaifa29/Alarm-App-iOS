@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct CreateAlarmView: View {
-    @Binding var path: [HomeRoute]
-    
     @State private var isToggleOn = true
     @State private var selectedSegment = 0
+    
     let options = ["Time", "Voice", "Detail"]
+    
+    @Binding var path: [HomeRoute]
+    @State var alarmData: CreateAlarmModel
     
     var body: some View {
         ZStack {
@@ -46,11 +48,23 @@ struct CreateAlarmView: View {
                 
                 switch selectedSegment {
                 case 0:
-                    TimeView()
+                    TimeView(selectedHour: alarmData.hour, selectedMinute: alarmData.minute, alarmNote: alarmData.note) { hour, minute, note in
+                        alarmData.hour = hour
+                        alarmData.minute = minute
+                        alarmData.note = note
+                        selectedSegment = 2
+                    }
+                    
                 case 1:
                     EmptyView()
+                    
                 case 2:
-                    DetailView(path: $path)
+                    DetailView(alarmName: alarmData.name) { alarmName, selectedDays in
+                        alarmData.name = alarmName
+                        alarmData.repeatDays = selectedDays
+                        
+                        self.path.append(.previewAlarm(data: alarmData))
+                    }
                     
                 default:
                     EmptyView()
@@ -65,5 +79,5 @@ struct CreateAlarmView: View {
 }
 
 #Preview {
-    CreateAlarmView(path: .constant([]))
+    CreateAlarmView(path: .constant([]), alarmData: .init())
 }

@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct SetAlarmView: View {
+    @State private var selectedHour: Int = 6
+    @State private var selectedMinute: Int = 30
+    @State private var repeatDays: String = ""
+    
     @Binding var path: [HomeRoute]
-    @State var selectedHour: Int = 6
-    @State var selectedMinute: Int = 30
+    @State var alarmData: CreateAlarmModel
     
     var body: some View {
         ZStack {
@@ -49,7 +52,7 @@ struct SetAlarmView: View {
                                 .font(.getFont(.bold, size: 16))
                                 .foregroundStyle(.custom433261)
                             
-                            Text("Name of music/song here")
+                            Text(alarmData.musicData?.name ?? "")
                                 .font(.getFont(.medium, size: 14))
                                 .foregroundStyle(.custom433261)
                             
@@ -88,7 +91,7 @@ struct SetAlarmView: View {
                             .foregroundStyle(.custom2D2D40)
                             .frame(height: 32)
                         
-                        Text("Monday, Tuesday, Wednesday")
+                        Text(repeatDays)
                             .font(.getFont(.medium, size: 14))
                             .foregroundStyle(.custom2D2D40)
                             .frame(height: 24)
@@ -114,10 +117,20 @@ struct SetAlarmView: View {
                 .padding([.horizontal, .top], 20)
             }
         }
+        .onAppear {
+            selectedHour = alarmData.hour
+            selectedMinute = alarmData.minute
+            for day in alarmData.repeatDays {
+                repeatDays += day.rawValue + ", "
+            }
+            if !repeatDays.isEmpty {
+                repeatDays.removeLast(2)
+            }
+        }
         .navigationBarHidden(true)
     }
 }
 
 #Preview {
-    SetAlarmView(path: .constant([]))
+    SetAlarmView(path: .constant([]), alarmData: .init())
 }

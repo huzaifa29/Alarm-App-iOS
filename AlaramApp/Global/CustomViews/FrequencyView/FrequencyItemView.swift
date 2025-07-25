@@ -8,19 +8,18 @@
 import SwiftUI
 
 struct FrequencyItemView: View {
-    var text: String
-    var isSelected: Bool = false
+    var dataModel: FrequencyData
     
     var body: some View {
-        Text(text)
+        Text(dataModel.text)
             .font(.getFont(.medium, size: 12))
-            .foregroundStyle(isSelected ?  .custom2D2D40 : .custom9A6C8D)
+            .foregroundStyle(dataModel.isSelected ?  .custom2D2D40 : .custom9A6C8D)
             .lineLimit(1)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
             .background(
                 Group {
-                    if isSelected {
+                    if dataModel.isSelected {
                         getUnselectedBackground()
                     } else {
                         getUnselectedBackground()
@@ -84,5 +83,5 @@ extension FrequencyItemView {
 }
 
 #Preview {
-    FrequencyItemView(text: "Every Day")
+    FrequencyItemView(dataModel: .init(text: "Everyday", isSelected: false))
 }

@@ -37,14 +37,14 @@ struct HomeView: View {
                 case .musicLibrary:
                     MusicLibraryView(path: $path, supabase: .shared)
                     
-                case .createAlarm:
-                    CreateAlarmView(path: $path)
+                case .createAlarm(let data):
+                    CreateAlarmView(path: $path, alarmData: data)
                     
-                case .previewAlarm:
-                    PreviewAlarmView(path: $path)
+                case .previewAlarm(let data):
+                    PreviewAlarmView(path: $path, alarmData: data)
                     
-                case .setAlarm:
-                    SetAlarmView(path: $path)
+                case .setAlarm(let data):
+                    SetAlarmView(path: $path, alarmData: data)
                 }
             })
 

@@ -24,7 +24,7 @@ struct AlarmItemView: View {
                 CustomToggle(isOn: $isToggleOn, onColor: .white, offColor: .white, knobColor: .white)
             }
             
-            FrequencyView(title: "06:30 AM", titleFont: .getFont(.bold, size: 16), titleColor: .custom433261, titleHeight: 26)
+//            FrequencyView(title: "06:30 AM", titleFont: .getFont(.bold, size: 16), titleColor: .custom433261, titleHeight: 26)
             
             HStack(spacing: 10) {
                 Image("ic_music")

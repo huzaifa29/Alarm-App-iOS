@@ -51,7 +51,7 @@ struct MusicLibraryView: View {
                 
                 PrimaryButton(text: selectedId != nil ? "Next" : "Select Music") {
                     if selectedId != nil {
-                        self.path.append(.createAlarm)
+                        self.path.append(.createAlarm(data: .init(musicData: selectedMusic)))
                     } else {
                         selectedId = selectedMusic?.id
                     }

@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct DetailView: View {
-    @Binding var path: [HomeRoute]
+    @State var alarmName: String = ""
+    @State private var arrayDays = [FrequencyData]()
     
-    @State private var alarmName: String = ""
+    var onSaveDetails: ((_ alarmName: String, _ selectedDays: [Days]) -> Void)? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -35,22 +36,30 @@ struct DetailView: View {
                 .frame(height: 53)
                 .shadow(color: .black.opacity(0.10), radius: 14, x: 0, y: 0)
             
-            FrequencyView(title: "Frequency model")
-            
-            FrequencyView(title: "Repeat on")
+            FrequencyView(title: "Repeat on", arrayItems: $arrayDays, isMultiSelectionEnabled: true)
             
             Spacer()
             
             PrimaryButton(text: "Save Details") {
-                self.path.append(.previewAlarm)
+                let selectedDays = arrayDays.filter({ $0.isSelected }).map {
+                    return Days(rawValue: $0.text)!
+                }
+                onSaveDetails?(alarmName, selectedDays)
             }
             .padding(.top, 20)
             
         }
         .padding([.horizontal, .top], 20)
+        .onAppear {
+            if arrayDays.isEmpty {
+                for day in Days.allCases {
+                    arrayDays.append(.init(text: day.rawValue, isSelected: false))
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    DetailView(path: .constant([]))
+    DetailView()
 }
