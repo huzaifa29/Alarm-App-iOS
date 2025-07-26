@@ -127,8 +127,9 @@ struct SetAlarmView: View {
         .onAppear {
             selectedHour = alarmData.selectedHour
             selectedMinute = alarmData.selectedMinute
-            for day in alarmData.selectedDays {
-                repeatDays += day.rawValue + ", "
+            let sortedDays = alarmData.selectedDays.sorted { return $0.sortValue < $1 .sortValue }
+            for day in sortedDays {
+                repeatDays += day.fullDayName + ", "
             }
             if !repeatDays.isEmpty {
                 repeatDays.removeLast(2)
