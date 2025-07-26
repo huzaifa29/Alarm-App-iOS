@@ -83,5 +83,5 @@ extension FrequencyItemView {
 }
 
 #Preview {
-    FrequencyItemView(dataModel: .init(text: "Everyday", isSelected: false))
+    FrequencyItemView(dataModel: .init(id: "Ev", text: "Everyday", isSelected: false))
 }

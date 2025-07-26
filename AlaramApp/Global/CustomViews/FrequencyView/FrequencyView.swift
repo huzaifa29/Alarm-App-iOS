@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FrequencyData: Identifiable {
-    var id = UUID()
+    var id: String
     var text: String
     var isSelected: Bool
 }

@@ -86,6 +86,8 @@ struct PreviewAlarmView: View {
                 PrimaryButton(text: "Save Details") {
                     alarmData.selectedHour = selectedHour
                     alarmData.selectedMinute = selectedMinute
+                    let selectedDays = Set(arrayDays.filter{ $0.isSelected }.compactMap { Locale.Weekday(rawValue: $0.id) })
+                    alarmData.selectedDays = selectedDays
                     self.path.append(.setAlarm(data: alarmData))
                 }
                 .padding([.horizontal, .top], 20)
@@ -99,7 +101,7 @@ struct PreviewAlarmView: View {
             if arrayDays.isEmpty {
                 for day in Locale.autoupdatingCurrent.orderedWeekdays {
                     let isSelected = alarmData.selectedDays.contains(day)
-                    arrayDays.append(.init(text: day.rawValue, isSelected: isSelected))
+                    arrayDays.append(.init(id: day.rawValue, text: day.fullDayName, isSelected: isSelected))
                 }
             }
         }

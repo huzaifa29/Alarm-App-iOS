@@ -41,7 +41,7 @@ struct DetailView: View {
             Spacer()
             
             PrimaryButton(text: "Save Details") {
-                let selectedDays = Set(arrayDays.filter{ $0.isSelected }.compactMap { Locale.Weekday(rawValue: $0.text) })
+                let selectedDays = Set(arrayDays.filter{ $0.isSelected }.compactMap { Locale.Weekday(rawValue: $0.id) })
                 onSaveDetails?(alarmName, selectedDays)
             }
             .padding(.top, 20)
@@ -51,7 +51,7 @@ struct DetailView: View {
         .onAppear {
             if arrayDays.isEmpty {
                 for day in Locale.autoupdatingCurrent.orderedWeekdays {
-                    arrayDays.append(.init(text: day.rawValue, isSelected: false))
+                    arrayDays.append(.init(id: day.rawValue, text: day.fullDayName, isSelected: false))
                 }
             }
         }
