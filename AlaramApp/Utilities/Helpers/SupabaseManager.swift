@@ -22,6 +22,16 @@ class SupabaseManager {
     fileprivate init() {
         client = SupabaseClient(supabaseURL: URL(string: url)!, supabaseKey: apiKey)
     }
+
+    func checkSession() async -> Bool {
+        do {
+            let session = try await client.auth.session
+            self.user = session.user
+            return true
+        } catch {
+            return false
+        }
+    }
     
     func getAuth() -> AuthClient {
         return client.auth
@@ -53,6 +63,7 @@ class SupabaseManager {
         do {
             let session = try await client.auth.signIn(email: email, password: password)
             self.user = session.user
+            AppDefaults.isLogin = true
             self.errorMessage = nil
             return true
         } catch {
@@ -91,4 +102,20 @@ extension SupabaseManager {
             return nil
         }
     }
+    
+    func create<T: Codable>(table: String, model: T) async {
+        do {
+            let response = try await client
+                .database
+                .from(table)
+                .insert([model]) // Insert the instance, not the type
+                .execute()
+            
+            print("Record created successfully: \(response)")
+        } catch {
+            self.errorMessage = error.localizedDescription
+            print("Insert error: \(error.localizedDescription)")
+        }
+    }
+
 }

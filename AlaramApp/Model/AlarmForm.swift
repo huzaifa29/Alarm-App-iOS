@@ -11,6 +11,7 @@ struct AlarmForm {
     var title = ""
     var desc = ""
     var musicData: MusicModel?
+    var type: AlarmType = .basic
     
     var selectedDate = Date.now
     var selectedDays = Set<Locale.Weekday>()
@@ -91,4 +92,8 @@ struct AlarmForm {
         case .openApp: .custom
         }
     }
+}
+
+enum AlarmType: String {
+    case basic
 }

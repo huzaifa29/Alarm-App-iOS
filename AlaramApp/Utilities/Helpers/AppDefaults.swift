@@ -15,8 +15,7 @@ class AppDefaults: UserDefaults {
     }
 
     static func clearUserDefaults() {
-        AppDefaults.onboardingShown = false
-        AppDefaults.permissionScreenShown = false
+        self.onboardingShown = false
     }
     
     static var onboardingShown: Bool {
@@ -24,23 +23,8 @@ class AppDefaults: UserDefaults {
         set { AppDefaults[#function] = newValue }
     }
     
-    static var permissionScreenShown: Bool {
+    static var isLogin: Bool {
         get { AppDefaults[#function] ?? false }
-        set { AppDefaults[#function] = newValue }
-    }
-    
-    static var scheduleActivities: Set<String> {
-        get { AppDefaults[#function] ?? [] }
-        set { AppDefaults[#function] = newValue }
-    }
-    
-    static var isDefaultSchedularSaved: Bool {
-        get { AppDefaults[#function] ?? false }
-        set { AppDefaults[#function] = newValue }
-    }
-    
-    static var selectedDailyLimit: Int? {
-        get { AppDefaults[#function] }
         set { AppDefaults[#function] = newValue }
     }
 }

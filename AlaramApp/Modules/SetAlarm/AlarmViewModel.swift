@@ -195,7 +195,7 @@ import AppIntents
         }
     }
     
-    private func requestAuthorization() async -> Bool {
+    func requestAuthorization() async -> Bool {
         switch alarmManager.authorizationState {
         case .notDetermined:
             do {

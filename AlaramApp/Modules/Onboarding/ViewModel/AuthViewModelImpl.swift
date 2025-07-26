@@ -10,6 +10,7 @@ import SwiftUI
 @MainActor
 class AuthViewModelImpl: ObservableObject {
     @Published var state: AuthViewModelState = .launch
+    let supabase: SupabaseManager = SupabaseManager.shared
     
     func updateState() {
         switch state {
@@ -18,7 +19,7 @@ class AuthViewModelImpl: ObservableObject {
         case .onboarding:
             state = .signin
         default:
-            print("")
+            print("Not found")
         }
     }
 }
@@ -26,7 +27,20 @@ class AuthViewModelImpl: ObservableObject {
 // MARK: -
 private extension AuthViewModelImpl {
     func configureCurrentState() {
-        let onboardingShown = AppDefaults.onboardingShown
-        state = onboardingShown ? .signin : .onboarding
+        if AppDefaults.isLogin {
+            Task {
+                let success = await supabase.checkSession()
+                if success {
+                    state = .tabbar
+                } else {
+                    state = .signin
+                }
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                let onboardingShown = AppDefaults.onboardingShown
+                self.state = onboardingShown ? .signin : .onboarding
+            }
+        }
     }
 }

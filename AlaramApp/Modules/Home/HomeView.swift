@@ -44,7 +44,7 @@ struct HomeView: View {
                     PreviewAlarmView(path: $path, alarmData: data)
                     
                 case .setAlarm(let data):
-                    SetAlarmView(path: $path, alarmData: data)
+                    SetAlarmView(path: $path, alarmData: data, supabase: .shared)
                 }
             })
 

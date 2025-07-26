@@ -11,4 +11,5 @@ enum AuthViewModelState {
     case launch
     case onboarding
     case signin
+    case tabbar
 }

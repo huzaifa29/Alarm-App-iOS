@@ -37,6 +37,9 @@ struct SigninView: View {
                     LoaderView()
                 }
             }
+            .onAppear {
+                AppDefaults.onboardingShown = true
+            }
             .onChange(of: alertMessage) {
                 if !alertMessage.isEmpty {
                     showAlert =  true

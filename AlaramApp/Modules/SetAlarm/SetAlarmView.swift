@@ -13,9 +13,11 @@ struct SetAlarmView: View {
     @State private var selectedHour: Int = 6
     @State private var selectedMinute: Int = 30
     @State private var repeatDays: String = ""
+    @State private var isLoading = false
     
     @Binding var path: [HomeRoute]
     @State var alarmData: AlarmForm
+    let supabase: SupabaseManager
     
     var body: some View {
         ZStack {
@@ -114,12 +116,12 @@ struct SetAlarmView: View {
                 Spacer()
                 
                 PrimaryButton(text: "Set Alarm") {
-                    alarmData.selectedHour = selectedHour
-                    alarmData.selectedMinute = selectedMinute
-                    alarmData.selectedDate = Date().replacing(hour: selectedHour, minute: selectedMinute)!
-                    alarmData.scheduleEnabled = true
-                    alarmViewModel.scheduleAlarm(with: alarmData)
-                    self.path.removeAll()
+                    Task {
+                        let isSuccess = await alarmViewModel.requestAuthorization()
+                        if isSuccess {
+                            self.callCreateAlarm()
+                        }
+                    }
                 }
                 .padding([.horizontal, .top], 20)
             }
@@ -135,10 +137,42 @@ struct SetAlarmView: View {
                 repeatDays.removeLast(2)
             }
         }
+        .loader(isLoading: isLoading)
         .navigationBarHidden(true)
     }
 }
 
+// MARK: - Methods
+extension SetAlarmView {
+    func callCreateAlarm() {
+        Task {
+            isLoading = true
+            
+            let alarmModel = AlarmModel.init(userId: supabase.user?.id.uuidString,
+                                             musicId: alarmData.musicData?.id,
+                                             name: alarmData.title,
+                                             description: alarmData.desc,
+                                             musicName: alarmData.musicData?.name,
+                                             musicUrl: alarmData.musicData?.url,
+                                             musicThumbnail: alarmData.musicData?.thumbnail,
+                                             time: alarmData.selectedDate,
+                                             selectedDays: repeatDays,
+                                             type: alarmData.type.rawValue,
+                                             createdAt: .init())
+            await supabase.create(table: "alarms", model: alarmModel)
+            self.isLoading = false
+            if supabase.errorMessage == nil {
+                alarmData.selectedHour = selectedHour
+                alarmData.selectedMinute = selectedMinute
+                alarmData.selectedDate = Date().replacing(hour: selectedHour, minute: selectedMinute)!
+                alarmData.scheduleEnabled = true
+                alarmViewModel.scheduleAlarm(with: alarmData)
+                self.path.removeAll()
+            }
+        }
+    }
+}
+
 #Preview {
-    SetAlarmView(path: .constant([]), alarmData: .init())
+    SetAlarmView(path: .constant([]), alarmData: .init(), supabase: .shared)
 }

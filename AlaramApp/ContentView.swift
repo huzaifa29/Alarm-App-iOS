@@ -31,6 +31,10 @@ func getViewForState(viewModel: AuthViewModelImpl) -> some View {
     case .signin:
         SigninView(supabase: .shared)
             .transition(.asymmetric(insertion: .opacity, removal: .move(edge: .leading)))
+    case .tabbar:
+        TabbarView()
+            .transition(.asymmetric(insertion: .opacity, removal: .move(edge: .leading)))
+        
     }
 }
 
