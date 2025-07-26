@@ -10,6 +10,8 @@
 		5012C6F72E291C1D00E0B10F /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 5012C6F62E291C1D00E0B10F /* Auth */; };
 		5012C6F92E291C1D00E0B10F /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 5012C6F82E291C1D00E0B10F /* Storage */; };
 		5012C6FB2E291C1D00E0B10F /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5012C6FA2E291C1D00E0B10F /* Supabase */; };
+		501D14BC2E35347900B42886 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 501D14BB2E35347900B42886 /* GoogleSignIn */; };
+		501D14BE2E35347900B42886 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 501D14BD2E35347900B42886 /* GoogleSignInSwift */; };
 		50ADD6912E328F44003EFAD1 /* WaterfallGrid in Frameworks */ = {isa = PBXBuildFile; productRef = 50ADD6902E328F44003EFAD1 /* WaterfallGrid */; };
 		50AFB3C22E34C8CA00EACE6B /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50AFB3C12E34C8CA00EACE6B /* WidgetKit.framework */; };
 		50AFB3C42E34C8CA00EACE6B /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50AFB3C32E34C8CA00EACE6B /* SwiftUI.framework */; };
@@ -97,8 +99,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				501D14BC2E35347900B42886 /* GoogleSignIn in Frameworks */,
 				5012C6F92E291C1D00E0B10F /* Storage in Frameworks */,
 				50ADD6912E328F44003EFAD1 /* WaterfallGrid in Frameworks */,
+				501D14BE2E35347900B42886 /* GoogleSignInSwift in Frameworks */,
 				5012C6F72E291C1D00E0B10F /* Auth in Frameworks */,
 				5012C6FB2E291C1D00E0B10F /* Supabase in Frameworks */,
 			);
@@ -170,6 +174,8 @@
 				5012C6F82E291C1D00E0B10F /* Storage */,
 				5012C6FA2E291C1D00E0B10F /* Supabase */,
 				50ADD6902E328F44003EFAD1 /* WaterfallGrid */,
+				501D14BB2E35347900B42886 /* GoogleSignIn */,
+				501D14BD2E35347900B42886 /* GoogleSignInSwift */,
 			);
 			productName = AlaramApp;
 			productReference = 507FF2982E25847F00B401D2 /* AlaramApp.app */;
@@ -227,6 +233,7 @@
 			packageReferences = (
 				5012C6F52E291C1D00E0B10F /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				50ADD68F2E328F44003EFAD1 /* XCRemoteSwiftPackageReference "WaterfallGrid" */,
+				501D14BA2E35347900B42886 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 507FF2992E25847F00B401D2 /* Products */;
@@ -560,6 +567,14 @@
 				minimumVersion = 2.5.1;
 			};
 		};
+		501D14BA2E35347900B42886 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
 		50ADD68F2E328F44003EFAD1 /* XCRemoteSwiftPackageReference "WaterfallGrid" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/paololeonardi/WaterfallGrid.git";
@@ -585,6 +600,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5012C6F52E291C1D00E0B10F /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		501D14BB2E35347900B42886 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 501D14BA2E35347900B42886 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		501D14BD2E35347900B42886 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 501D14BA2E35347900B42886 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
 		};
 		50ADD6902E328F44003EFAD1 /* WaterfallGrid */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -15,6 +15,7 @@ struct SigninView: View {
     @State private var isLoading = false
     @State private var showAlert = false
     @State private var alertMessage = ""
+    @State private var showGoogleSignIn = false
     
     let supabase: SupabaseManager
     
@@ -50,6 +51,16 @@ struct SigninView: View {
             }
             .fullScreenCover(isPresented: $isPresentTabbar) {
                 TabbarView()
+            }
+            .sheet(isPresented: $showGoogleSignIn) {
+                GoogleSignInWrapper { success, error in
+                    showGoogleSignIn = false
+                    if success {
+                        isPresentTabbar = true
+                    } else {
+                        alertMessage = error ?? "Some thing went wrong"
+                    }
+                }
             }
             .ignoresSafeArea(edges: .all)
             .navigationBarHidden(true)
@@ -117,6 +128,7 @@ extension SigninView {
     func getBottomView() -> some View {
         VStack(spacing: 10) {
             PrimaryButton(text: "Sign In") {
+//                isPresentTabbar = true
                 if validateFields() {
                     self.callSignIn()
                 }
@@ -128,9 +140,7 @@ extension SigninView {
                 .frame(height: 28)
             
             PrimaryButton(leftIcon: "ic_google", text: "Sign In With Google") {
-                Task {
-                    await supabase.signInWithGoogle()
-                }
+                showGoogleSignIn = true
             }
             
             Spacer()

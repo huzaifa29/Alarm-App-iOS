@@ -22,6 +22,8 @@ struct SignupView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isSignupSuccess = false
+    @State private var showGoogleSignIn = false
+    @State private var isPresentTabbar = false
     
     let supabase: SupabaseManager
     
@@ -63,6 +65,19 @@ struct SignupView: View {
                 }
                 alertMessage = ""
             }
+        }
+        .sheet(isPresented: $showGoogleSignIn) {
+            GoogleSignInWrapper { success, error in
+                showGoogleSignIn = false
+                if success {
+                    isPresentTabbar = true
+                } else {
+                    alertMessage = error ?? "Some thing went wrong"
+                }
+            }
+        }
+        .fullScreenCover(isPresented: $isPresentTabbar) {
+            TabbarView()
         }
         .ignoresSafeArea(edges: .all)
     }
@@ -118,7 +133,9 @@ extension SignupView {
                 .foregroundStyle(Color(.custom2D2D40))
                 .frame(height: 28)
             
-            PrimaryButton(leftIcon: "ic_google", text: "Sign Up With Google")
+            PrimaryButton(leftIcon: "ic_google", text: "Sign Up With Google") {
+                showGoogleSignIn = true
+            }
             
             HStack(spacing: 2) {
                 Text("Already have account?")

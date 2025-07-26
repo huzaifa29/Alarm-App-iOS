@@ -72,30 +72,6 @@ class SupabaseManager {
             return false
         }
     }
-    
-    func signInWithGoogle() async {
-        errorMessage = nil
-        do {
-            try await supabase.auth.signInWithOAuth(
-                provider: .google,
-                redirectTo: URL(string: "")!
-            )
-        } catch {
-            self.errorMessage = error.localizedDescription
-        }
-    }
-    
-    // ✅ Called from AppDelegate to handle the redirect callback
-    func handleOAuthCallback(url: URL) {
-        Task {
-            do {
-                _ = try await client.auth.session(from: url)
-                //                    self.user = try? await supabase.auth.getSession().user
-            } catch {
-                self.errorMessage = error.localizedDescription
-            }
-        }
-    }
 }
 
 // MARK: - Tables

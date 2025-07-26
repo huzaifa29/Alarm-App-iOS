@@ -2,6 +2,21 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string></string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.567131514053-jek38jdemiettkjc1b48ll3610ja7b52</string>
+			</array>
+		</dict>
+	</array>
+	<key>GIDClientID</key>
+	<string>567131514053-jek38jdemiettkjc1b48ll3610ja7b52.apps.googleusercontent.com</string>
 	<key>NSAlarmKitUsageDescription</key>
 	<string>This app uses AlarmKit to set alarms and manage wake times.</string>
 	<key>UIAppFonts</key>
