@@ -13,7 +13,7 @@ struct PreviewAlarmView: View {
     @State private var arrayDays = [FrequencyData]()
     
     @Binding var path: [HomeRoute]
-    @State var alarmData: CreateAlarmModel
+    @State var alarmData: AlarmForm
     
     var body: some View {
         ZStack {
@@ -84,19 +84,21 @@ struct PreviewAlarmView: View {
                 Spacer()
                 
                 PrimaryButton(text: "Save Details") {
+                    alarmData.selectedHour = selectedHour
+                    alarmData.selectedMinute = selectedMinute
                     self.path.append(.setAlarm(data: alarmData))
                 }
                 .padding([.horizontal, .top], 20)
             }
         }
         .onAppear {
-            selectedHour = alarmData.hour
-            selectedMinute = alarmData.minute
+            selectedHour = alarmData.selectedHour
+            selectedMinute = alarmData.selectedMinute
             
             
             if arrayDays.isEmpty {
-                for day in Days.allCases {
-                    let isSelected = alarmData.repeatDays.firstIndex(of: day) != nil
+                for day in Locale.autoupdatingCurrent.orderedWeekdays {
+                    let isSelected = alarmData.selectedDays.contains(day)
                     arrayDays.append(.init(text: day.rawValue, isSelected: isSelected))
                 }
             }

@@ -10,9 +10,9 @@ import Foundation
 enum HomeRoute: Hashable {
     case selectAlarmType
     case musicLibrary
-    case createAlarm(data: CreateAlarmModel)
-    case previewAlarm(data: CreateAlarmModel)
-    case setAlarm(data: CreateAlarmModel)
+    case createAlarm(data: AlarmForm)
+    case previewAlarm(data: AlarmForm)
+    case setAlarm(data: AlarmForm)
     
     static func == (lhs: HomeRoute, rhs: HomeRoute) -> Bool {
         switch (lhs, rhs) {

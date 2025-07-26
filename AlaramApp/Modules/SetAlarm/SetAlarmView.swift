@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct SetAlarmView: View {
+    @State private var alarmViewModel = AlarmViewModel()
+    
     @State private var selectedHour: Int = 6
     @State private var selectedMinute: Int = 30
     @State private var repeatDays: String = ""
     
     @Binding var path: [HomeRoute]
-    @State var alarmData: CreateAlarmModel
+    @State var alarmData: AlarmForm
     
     var body: some View {
         ZStack {
@@ -112,15 +114,20 @@ struct SetAlarmView: View {
                 Spacer()
                 
                 PrimaryButton(text: "Set Alarm") {
-                    print("Set Alarm Tap")
+                    alarmData.selectedHour = selectedHour
+                    alarmData.selectedMinute = selectedMinute
+                    alarmData.selectedDate = Date().replacing(hour: selectedHour, minute: selectedMinute)!
+                    alarmData.scheduleEnabled = true
+                    alarmViewModel.scheduleAlarm(with: alarmData)
+                    self.path.removeAll()
                 }
                 .padding([.horizontal, .top], 20)
             }
         }
         .onAppear {
-            selectedHour = alarmData.hour
-            selectedMinute = alarmData.minute
-            for day in alarmData.repeatDays {
+            selectedHour = alarmData.selectedHour
+            selectedMinute = alarmData.selectedMinute
+            for day in alarmData.selectedDays {
                 repeatDays += day.rawValue + ", "
             }
             if !repeatDays.isEmpty {

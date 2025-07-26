@@ -99,6 +99,12 @@ struct TimeView: View {
             
         }
         .padding([.horizontal, .top], 20)
+        .onAppear {
+            let dateComponents = Calendar.current.dateComponents([.hour, .minute], from: Date())
+            guard let hour = dateComponents.hour, let minute = dateComponents.minute else { return }
+            selectedHour = hour
+            selectedMinute = minute
+        }
     }
 }
 

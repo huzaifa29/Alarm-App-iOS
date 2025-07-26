@@ -11,7 +11,7 @@ struct DetailView: View {
     @State var alarmName: String = ""
     @State private var arrayDays = [FrequencyData]()
     
-    var onSaveDetails: ((_ alarmName: String, _ selectedDays: [Days]) -> Void)? = nil
+    var onSaveDetails: ((_ alarmName: String, _ selectedDays: Set<Locale.Weekday>) -> Void)? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -41,9 +41,7 @@ struct DetailView: View {
             Spacer()
             
             PrimaryButton(text: "Save Details") {
-                let selectedDays = arrayDays.filter({ $0.isSelected }).map {
-                    return Days(rawValue: $0.text)!
-                }
+                let selectedDays = Set(arrayDays.filter{ $0.isSelected }.compactMap { Locale.Weekday(rawValue: $0.text) })
                 onSaveDetails?(alarmName, selectedDays)
             }
             .padding(.top, 20)
@@ -52,7 +50,7 @@ struct DetailView: View {
         .padding([.horizontal, .top], 20)
         .onAppear {
             if arrayDays.isEmpty {
-                for day in Days.allCases {
+                for day in Locale.autoupdatingCurrent.orderedWeekdays {
                     arrayDays.append(.init(text: day.rawValue, isSelected: false))
                 }
             }

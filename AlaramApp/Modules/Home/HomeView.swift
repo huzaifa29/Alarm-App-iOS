@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct HomeView: View {
-    @Binding var path: [HomeRoute]
-    
     @State private var selectedDate = Date()
+    
+    @Binding var path: [HomeRoute]
     
     var body: some View {
         NavigationStack(path: $path) {

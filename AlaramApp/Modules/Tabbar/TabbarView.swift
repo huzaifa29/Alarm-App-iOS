@@ -13,6 +13,7 @@ struct TabbarView: View {
     
     var body: some View {
         ZStack(alignment: .bottom) {
+            PrimaryBackground()
             // Content Views
             Group {
                 switch selectedTab {

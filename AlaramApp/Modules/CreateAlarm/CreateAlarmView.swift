@@ -14,7 +14,7 @@ struct CreateAlarmView: View {
     let options = ["Time", "Voice", "Detail"]
     
     @Binding var path: [HomeRoute]
-    @State var alarmData: CreateAlarmModel
+    @State var alarmData: AlarmForm
     
     var body: some View {
         ZStack {
@@ -48,10 +48,10 @@ struct CreateAlarmView: View {
                 
                 switch selectedSegment {
                 case 0:
-                    TimeView(selectedHour: alarmData.hour, selectedMinute: alarmData.minute, alarmNote: alarmData.note) { hour, minute, note in
-                        alarmData.hour = hour
-                        alarmData.minute = minute
-                        alarmData.note = note
+                    TimeView(selectedHour: alarmData.selectedHour, selectedMinute: alarmData.selectedMinute, alarmNote: alarmData.desc) { hour, minute, note in
+                        alarmData.selectedHour = hour
+                        alarmData.selectedMinute = minute
+                        alarmData.desc = note
                         selectedSegment = 2
                     }
                     
@@ -59,9 +59,9 @@ struct CreateAlarmView: View {
                     EmptyView()
                     
                 case 2:
-                    DetailView(alarmName: alarmData.name) { alarmName, selectedDays in
-                        alarmData.name = alarmName
-                        alarmData.repeatDays = selectedDays
+                    DetailView(alarmName: alarmData.title) { alarmName, selectedDays in
+                        alarmData.title = alarmName
+                        alarmData.selectedDays = selectedDays
                         
                         self.path.append(.previewAlarm(data: alarmData))
                     }
