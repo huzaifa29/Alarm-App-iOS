@@ -9,32 +9,39 @@ import SwiftUI
 
 struct AlarmItemView: View {
     @State private var isToggleOn = true
+    @State private var selectedDays = [FrequencyData]()
+    
     let columns = [
         GridItem(.adaptive(minimum: 90), spacing: 0)
     ]
+    
+    var alarmData: AlarmModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 10) {
                 Image("ic_clock")
-                Text("Morning Wake up")
+                Text(alarmData.name ?? "")
                     .font(.getFont(.medium, size: 14))
                     .foregroundStyle(.custom9A6C8D)
                 Spacer()
                 CustomToggle(isOn: $isToggleOn, onColor: .white, offColor: .white, knobColor: .white)
             }
             
-//            FrequencyView(title: "06:30 AM", titleFont: .getFont(.bold, size: 16), titleColor: .custom433261, titleHeight: 26)
+            FrequencyView(title: alarmData.getFormattedTime() ?? "", titleFont: .getFont(.bold, size: 16), titleColor: .custom433261, titleHeight: 26, arrayItems: $selectedDays)
             
             HStack(spacing: 10) {
                 Image("ic_music")
-                Text("Your favorite tune")
+                Text(alarmData.musicName ?? "")
                     .font(.getFont(.medium, size: 14))
                     .foregroundStyle(.custom433261)
                 Spacer()
             }
             
             getButton()
+        }
+        .onAppear {
+            selectedDays = alarmData.getSelectedDays()
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 11)
@@ -66,9 +73,9 @@ extension AlarmItemView {
                 print("Tapped")
             } label: {
                 HStack(spacing: 8) {
-                        Image("ic_share_user") // Replace with actual asset name
-                            .resizable()
-                            .frame(width: 16, height: 16)
+                    Image("ic_share_user") // Replace with actual asset name
+                        .resizable()
+                        .frame(width: 16, height: 16)
                     
                     Text("Shared by Minol Kot..")
                         .font(Font.getFont(.regular, size: 12))
@@ -108,7 +115,17 @@ extension AlarmItemView {
 }
 
 #Preview {
-    AlarmItemView()
+    AlarmItemView(alarmData: .init(userId: nil,
+                                   musicId: nil,
+                                   name: "Test",
+                                   description: nil,
+                                   musicName: nil,
+                                   musicUrl: nil,
+                                   musicThumbnail: nil,
+                                   time: .init(),
+                                   selectedDays: "Monday",
+                                   type: "Basic",
+                                   createdAt: .init()))
 }
 
 

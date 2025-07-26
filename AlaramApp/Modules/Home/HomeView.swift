@@ -9,8 +9,11 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var selectedDate = Date()
+    @State private var isLoading = false
+    @State private var arrayAlarms = [AlarmModel]()
     
     @Binding var path: [HomeRoute]
+    let supabase: SupabaseManager
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -27,6 +30,10 @@ struct HomeView: View {
                 }
                 
                 Spacer()
+            }
+            .loader(isLoading: isLoading)
+            .onAppear {
+                callGetAlarms()
             }
             .navigationBarHidden(true)
             .navigationDestination(for: HomeRoute.self, destination: { route in
@@ -52,6 +59,7 @@ struct HomeView: View {
     }
 }
 
+// MARK: - Methods
 extension HomeView {
     func getTopView() -> some View {
         HStack(spacing: 15) {
@@ -253,14 +261,25 @@ extension HomeView {
                 Spacer()
             }
             
-            ForEach(0..<5) { index in
-                AlarmItemView()
+            ForEach(arrayAlarms, id: \.self) { alarm in
+                AlarmItemView(alarmData: alarm)
             }
         }
         .padding(.horizontal, 20)
     }
 }
 
+// MARK: - API Calls
+extension HomeView {
+    func callGetAlarms() {
+        Task {
+            self.isLoading = true
+            self.arrayAlarms = await supabase.fetchTable(table: "alarms", as: AlarmModel.self) ?? []
+            self.isLoading = false
+        }
+    }
+}
+
 #Preview {
-    HomeView(path: .constant([]))
+    HomeView(path: .constant([]), supabase: .shared)
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MusicModel: Decodable, Hashable {
+struct MusicModel: Codable, Hashable {
     
     let id: String?
     let name: String?

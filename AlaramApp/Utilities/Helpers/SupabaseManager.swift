@@ -87,7 +87,7 @@ class SupabaseManager {
 
 // MARK: - Tables
 extension SupabaseManager {
-    func fetchTable<T: Decodable>(table: String, as type: T.Type) async -> [T]? {
+    func fetchTable<T: Codable>(table: String, as type: T.Type) async -> [T]? {
         do {
             let items: [T] = try await client
                 .database
@@ -104,6 +104,7 @@ extension SupabaseManager {
     }
     
     func create<T: Codable>(table: String, model: T) async {
+        self.errorMessage = nil
         do {
             let response = try await client
                 .database
@@ -115,6 +116,34 @@ extension SupabaseManager {
         } catch {
             self.errorMessage = error.localizedDescription
             print("Insert error: \(error.localizedDescription)")
+        }
+    }
+    
+    func fetchTable<T: Codable>(
+        table: String,
+        as type: T.Type,
+        filterColumn: String? = nil,
+        filterValue: String? = nil
+    ) async -> [T]? {
+        do {
+            var query = client
+                .database
+                .from(table)
+                .select()
+            
+            if let column = filterColumn, let value = filterValue {
+                query = query.eq(column, value: value)
+            }
+
+            let items: [T] = try await query
+                .execute()
+                .value
+
+            self.errorMessage = nil
+            return items
+        } catch {
+            self.errorMessage = error.localizedDescription
+            return nil
         }
     }
 

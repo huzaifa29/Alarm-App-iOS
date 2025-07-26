@@ -18,7 +18,7 @@ struct TabbarView: View {
             Group {
                 switch selectedTab {
                 case .home:
-                    HomeView(path: $path)
+                    HomeView(path: $path, supabase: .shared)
                         .padding(.bottom, path.count == 0 ? 90 : 0)
                     
                 case .alarm:

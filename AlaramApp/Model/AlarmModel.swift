@@ -20,6 +20,7 @@ struct AlarmModel: Codable, Hashable {
     let selectedDays: String?
     let type: String?
     let createdAt: Date?
+    var isEnabled: Bool? = true
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -34,6 +35,20 @@ struct AlarmModel: Codable, Hashable {
         case selectedDays = "selected_days"
         case type
         case createdAt = "created_at"
+        case isEnabled = "is_enabled"
+    }
+    
+    func getFormattedTime() -> String? {
+        guard let time else { return nil }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "hh:mm a"
+        return dateFormatter.string(from: time)
+    }
+    
+    func getSelectedDays() -> [FrequencyData] {
+        guard let selectedDays else { return [] }
+        return selectedDays.components(separatedBy: ",").map {
+            return FrequencyData(id: UUID().uuidString, text: $0, isSelected: false)
+        }
     }
 }
-
