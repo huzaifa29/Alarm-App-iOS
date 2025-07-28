@@ -37,8 +37,7 @@ class SupabaseManager {
         return client.auth
     }
     
-    func signUp(email: String, password: String, name: String, language: String) async -> Bool {
-        errorMessage = nil
+    func signUp(email: String, password: String, name: String, language: String) async throws -> Error? {
         do {
             let session = try await client.auth.signUp(
                 email: email,
@@ -49,12 +48,10 @@ class SupabaseManager {
                 ]
             )
             self.user = session.user
-            self.errorMessage = nil
-            return true
+            return nil
         } catch {
             self.user = nil
-            self.errorMessage = error.localizedDescription
-            return false
+            return error
         }
     }
     
@@ -103,8 +100,7 @@ extension SupabaseManager {
         }
     }
     
-    func insert<T: Codable>(table: String, model: T) async {
-        self.errorMessage = nil
+    func insert<T: Codable>(table: String, model: T) async throws -> Error? {
         do {
             let response = try await client
                 .schema("public")
@@ -113,9 +109,10 @@ extension SupabaseManager {
                 .execute()
             
             print("Record created successfully: \(response)")
+            return nil
         } catch {
-            self.errorMessage = error.localizedDescription
             print("Insert error: \(error.localizedDescription)")
+            return error
         }
     }
     

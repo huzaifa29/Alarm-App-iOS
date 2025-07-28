@@ -70,7 +70,7 @@ struct SignupView: View {
             GoogleSignInWrapper { success, error in
                 showGoogleSignIn = false
                 if success {
-                    isPresentTabbar = true
+                    self.callCreateUser(socialType: "google")
                 } else {
                     alertMessage = error ?? "Some thing went wrong"
                 }
@@ -163,14 +163,32 @@ extension SignupView {
     func callSignup() {
         Task {
             isLoading = true
-            let success = await supabase.signUp(email: email, password: password, name: name, language: language)
-            self.isSignupSuccess = success
-            if let errorMessage = supabase.errorMessage {
+            let error = try await supabase.signUp(email: email, password: password, name: name, language: language)
+            if let errorMessage = error?.localizedDescription {
                 alertMessage = errorMessage
             } else {
-                self.alertMessage = "Account Created"
+                self.callCreateUser()
             }
-            isLoading = false
+        }
+    }
+    
+    func callCreateUser(socialType: String? = nil) {
+        Task {
+            guard let userId = supabase.user?.id.uuidString else { return }
+            let userModel = UserModel(id: userId, name: name, email: email, language: language, social_type: socialType, last_login_at: .now, profilePictureURL: nil, createdAt: .now)
+            print(userModel)
+            let error = try await supabase.insert(table: "user_profiles", model: userModel)
+            self.isLoading = false
+            if let errorMessage = error?.localizedDescription {
+                alertMessage = errorMessage
+            } else {
+                if socialType != nil {
+                    isPresentTabbar = true
+                } else {
+                    self.isSignupSuccess = true
+                    alertMessage = "Account Created Successfully"
+                }
+            }
         }
     }
 }
