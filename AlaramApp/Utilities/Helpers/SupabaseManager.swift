@@ -22,7 +22,7 @@ class SupabaseManager {
     fileprivate init() {
         client = SupabaseClient(supabaseURL: URL(string: url)!, supabaseKey: apiKey)
     }
-
+    
     func checkSession() async -> Bool {
         do {
             let session = try await client.auth.session
@@ -87,29 +87,29 @@ class SupabaseManager {
 
 // MARK: - Tables
 extension SupabaseManager {
-    func fetchTable<T: Codable>(table: String, as type: T.Type) async -> [T]? {
-        do {
-            let items: [T] = try await client
-                .database
-                .from(table)
-                .select()
-                .execute()
-                .value
-            self.errorMessage = nil
-            return items
-        } catch {
-            self.errorMessage = error.localizedDescription
-            return nil
-        }
-    }
-    
-    func create<T: Codable>(table: String, model: T) async {
+    func fetchTable<T: Decodable>(table: String,select: String = "*",as type: T.Type) async -> [T]? {
         self.errorMessage = nil
         do {
             let response = try await client
-                .database
+                .schema("public")
                 .from(table)
-                .insert([model]) // Insert the instance, not the type
+                .select(select)
+                .execute()
+            
+            return try decode(response.data, as: [T].self)
+        } catch {
+            self.errorMessage = error.localizedDescription
+            return []
+        }
+    }
+    
+    func insert<T: Codable>(table: String, model: T) async {
+        self.errorMessage = nil
+        do {
+            let response = try await client
+                .schema("public")
+                .from(table)
+                .insert([model])
                 .execute()
             
             print("Record created successfully: \(response)")
@@ -119,32 +119,14 @@ extension SupabaseManager {
         }
     }
     
-    func fetchTable<T: Codable>(
-        table: String,
-        as type: T.Type,
-        filterColumn: String? = nil,
-        filterValue: String? = nil
-    ) async -> [T]? {
-        do {
-            var query = client
-                .database
-                .from(table)
-                .select()
-            
-            if let column = filterColumn, let value = filterValue {
-                query = query.eq(column, value: value)
-            }
-
-            let items: [T] = try await query
-                .execute()
-                .value
-
-            self.errorMessage = nil
-            return items
-        } catch {
-            self.errorMessage = error.localizedDescription
-            return nil
-        }
+    // Generic decoder method
+    func decode<T: Decodable>(_ data: Data, as type: T.Type) throws -> T {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.dateDecodingStrategy = .iso8601
+        
+        return try decoder.decode(T.self, from: data)
     }
-
+    
+    
 }

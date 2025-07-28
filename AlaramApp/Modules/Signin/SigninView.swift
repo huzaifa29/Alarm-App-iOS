@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SigninView: View {
-    @State private var email = ""
-    @State private var password = ""
+    @State private var email = "junaid.waqar92@gmail.com"
+    @State private var password = "Abc123"
     @State private var path = [AuthRoute]()
     @State private var isPresentTabbar = false
     @State private var isLoading = false

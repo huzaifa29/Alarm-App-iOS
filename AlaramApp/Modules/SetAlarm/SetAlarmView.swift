@@ -147,24 +147,26 @@ extension SetAlarmView {
     func callCreateAlarm() {
         Task {
             isLoading = true
+            let selectedDays = alarmData.selectedDays.map({ return $0.fullDayName })
+            let alarmTime = Date().replacing(hour: selectedHour, minute: selectedMinute)!
             
-            let alarmModel = AlarmModel.init(userId: supabase.user?.id.uuidString,
-                                             musicId: alarmData.musicData?.id,
-                                             name: alarmData.title,
-                                             description: alarmData.desc,
-                                             musicName: alarmData.musicData?.name,
-                                             musicUrl: alarmData.musicData?.url,
-                                             musicThumbnail: alarmData.musicData?.thumbnail,
-                                             time: alarmData.selectedDate,
-                                             selectedDays: repeatDays,
-                                             type: alarmData.type.rawValue,
-                                             createdAt: .init())
-            await supabase.create(table: "alarms", model: alarmModel)
+            print(supabase.user?.id.uuidString)
+            print(alarmData.musicData?.id)
+            
+            let alarmModel = AlarmModel(userId: supabase.user?.id.uuidString ?? "",
+                                        musicId: alarmData.musicData?.id ?? "",
+                                        name: alarmData.title,
+                                        description: alarmData.desc,
+                                        type: alarmData.type.rawValue,
+                                        selectedDays: selectedDays,
+                                        time: alarmTime,
+                                        createdAt: .now)
+            await supabase.insert(table: "alarms", model: alarmModel)
             self.isLoading = false
             if supabase.errorMessage == nil {
                 alarmData.selectedHour = selectedHour
                 alarmData.selectedMinute = selectedMinute
-                alarmData.selectedDate = Date().replacing(hour: selectedHour, minute: selectedMinute)!
+                alarmData.selectedDate = alarmTime
                 alarmData.scheduleEnabled = true
                 alarmViewModel.scheduleAlarm(with: alarmData)
                 self.path.removeAll()

@@ -32,7 +32,7 @@ struct AlarmItemView: View {
             
             HStack(spacing: 10) {
                 Image("ic_music")
-                Text(alarmData.musicName ?? "")
+                Text(alarmData.music?.name ?? "")
                     .font(.getFont(.medium, size: 14))
                     .foregroundStyle(.custom433261)
                 Spacer()
@@ -115,17 +115,7 @@ extension AlarmItemView {
 }
 
 #Preview {
-    AlarmItemView(alarmData: .init(userId: nil,
-                                   musicId: nil,
-                                   name: "Test",
-                                   description: nil,
-                                   musicName: nil,
-                                   musicUrl: nil,
-                                   musicThumbnail: nil,
-                                   time: .init(),
-                                   selectedDays: "Monday",
-                                   type: "Basic",
-                                   createdAt: .init()))
+    AlarmItemView(alarmData: .init(userId: "", musicId: "", name: "Test", description: "Test", type: "basic", selectedDays: [], time: nil, createdAt: nil))
 }
 
 

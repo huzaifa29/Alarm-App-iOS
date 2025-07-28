@@ -21,19 +21,19 @@ extension Locale.Weekday {
     var fullDayName: String {
         switch self {
         case .sunday:
-            return "Sunday"
+            return "sunday"
         case .monday:
-            return "Monday"
+            return "monday"
         case .tuesday:
-            return "Tuesday"
+            return "tuesday"
         case .wednesday:
-            return "Wednesday"
+            return "wednesday"
         case .thursday:
-            return "Thursday"
+            return "thursday"
         case .friday:
-            return "Friday"
+            return "friday"
         case .saturday:
-            return "Saturday"
+            return "saturday"
         @unknown default:
             fatalError()
         }

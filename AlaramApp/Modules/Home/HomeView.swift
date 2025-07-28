@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Supabase
 
 struct HomeView: View {
     @State private var selectedDate = Date()
@@ -274,7 +275,12 @@ extension HomeView {
     func callGetAlarms() {
         Task {
             self.isLoading = true
-            self.arrayAlarms = await supabase.fetchTable(table: "alarms", as: AlarmModel.self) ?? []
+            let selectFilter = """
+                    *,
+                    music:music_id (*),
+                    user:user_id (*)
+                    """
+            self.arrayAlarms = await supabase.fetchTable(table: "alarms", select: selectFilter, as: AlarmModel.self) ?? []
             self.isLoading = false
         }
     }
