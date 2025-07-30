@@ -60,7 +60,6 @@ class SupabaseManager {
         do {
             let session = try await client.auth.signIn(email: email, password: password)
             self.user = session.user
-            AppDefaults.isLogin = true
             self.errorMessage = nil
             return true
         } catch {
@@ -80,6 +79,33 @@ class SupabaseManager {
             return false
         }
     }
+    
+    func googleSignin(name: String?, language: String?, profilePictureURL: String?) async throws -> String? {
+        let isSessionFetch = await self.checkSession()
+        if isSessionFetch {
+            guard let userId = self.user?.id.uuidString, let email = self.user?.email else {
+                return "No session found"
+            }
+            
+            do {
+                let users = await self.fetchTable(table: .userProfiles, filters: ["email": email], as: UserModel.self) ?? []
+                if users.isEmpty {
+                    let userModel = UserModel(id: userId, name: name, email: email, language: language, social_type: "google", last_login_at: .now, profilePictureURL: nil, createdAt: .now)
+                    
+                    let error = try await self.insert(table: .userProfiles, model: userModel)
+                    return error?.localizedDescription
+                    
+                } else {
+                    return nil
+                }
+            } catch {
+                return error.localizedDescription
+            }
+            
+        } else {
+            return "No session found"
+        }
+    }
 }
 
 // MARK: - Tables
@@ -91,7 +117,7 @@ extension SupabaseManager {
                 .schema("public")
                 .from(table.rawValue)
                 .select(select)
-
+            
             for (key, value) in filters {
                 if let stringValue = value as? String {
                     query = query.eq(key, value: stringValue)
@@ -103,15 +129,14 @@ extension SupabaseManager {
                     print("Unsupported filter type for key: \(key)")
                 }
             }
-
-            let response = try await query.execute()
-            return try decode(response.data, as: [T].self)
+            return try await query.execute().value
+            
         } catch {
+            print("Error fetching \(table.rawValue): \(error.localizedDescription)")
             self.errorMessage = error.localizedDescription
             return []
         }
     }
-
     
     func insert<T: Codable>(table: SupabaseTable, model: T) async throws -> Error? {
         do {
@@ -137,6 +162,5 @@ extension SupabaseManager {
         
         return try decoder.decode(T.self, from: data)
     }
-    
     
 }

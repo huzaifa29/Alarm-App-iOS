@@ -69,8 +69,17 @@ struct SignupView: View {
         .sheet(isPresented: $showGoogleSignIn) {
             GoogleSignInWrapper { success, error in
                 showGoogleSignIn = false
+                isLoading = true
                 if success {
-                    self.callCreateUser(socialType: "google")
+                    Task {
+                        let errorMessage = try await supabase.googleSignin(name: name, language: language, profilePictureURL: nil) ?? ""
+                        isLoading = false
+                        if errorMessage.isEmpty {
+                            self.isPresentTabbar = true
+                        } else {
+                            self.alertMessage = errorMessage
+                        }
+                    }
                 } else {
                     alertMessage = error ?? "Some thing went wrong"
                 }
@@ -172,22 +181,17 @@ extension SignupView {
         }
     }
     
-    func callCreateUser(socialType: String? = nil) {
+    func callCreateUser() {
         Task {
             guard let userId = supabase.user?.id.uuidString else { return }
-            let userModel = UserModel(id: userId, name: name, email: email, language: language, social_type: socialType, last_login_at: .now, profilePictureURL: nil, createdAt: .now)
-            print(userModel)
+            let userModel = UserModel(id: userId, name: name, email: email, language: language, social_type: nil, last_login_at: .now, profilePictureURL: nil, createdAt: .now)
             let error = try await supabase.insert(table: .userProfiles, model: userModel)
             self.isLoading = false
             if let errorMessage = error?.localizedDescription {
                 alertMessage = errorMessage
             } else {
-                if socialType != nil {
-                    isPresentTabbar = true
-                } else {
-                    self.isSignupSuccess = true
-                    alertMessage = "Account Created Successfully"
-                }
+                self.isSignupSuccess = true
+                alertMessage = "Account Created Successfully"
             }
         }
     }

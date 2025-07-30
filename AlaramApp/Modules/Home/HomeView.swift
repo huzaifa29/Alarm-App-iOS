@@ -34,6 +34,7 @@ struct HomeView: View {
             }
             .loader(isLoading: isLoading)
             .onAppear {
+                AppDefaults.isLogin = true
                 callGetAlarms()
             }
             .navigationBarHidden(true)

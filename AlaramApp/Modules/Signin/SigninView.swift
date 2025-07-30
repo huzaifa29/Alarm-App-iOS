@@ -58,8 +58,17 @@ struct SigninView: View {
             .sheet(isPresented: $showGoogleSignIn) {
                 GoogleSignInWrapper { success, error in
                     showGoogleSignIn = false
+                    isLoading = true
                     if success {
-                        isPresentTabbar = true
+                        Task {
+                            let errorMessage = try await supabase.googleSignin(name: nil, language: nil, profilePictureURL: nil) ?? ""
+                            isLoading = false
+                            if errorMessage.isEmpty {
+                                self.isPresentTabbar = true
+                            } else {
+                                self.alertMessage = errorMessage
+                            }
+                        }
                     } else {
                         alertMessage = error ?? "Some thing went wrong"
                     }
@@ -131,7 +140,6 @@ extension SigninView {
     func getBottomView() -> some View {
         VStack(spacing: 10) {
             PrimaryButton(text: "Sign In") {
-//                isPresentTabbar = true
                 if validateFields() {
                     self.callSignIn()
                 }
