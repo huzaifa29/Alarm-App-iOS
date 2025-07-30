@@ -84,27 +84,40 @@ class SupabaseManager {
 
 // MARK: - Tables
 extension SupabaseManager {
-    func fetchTable<T: Decodable>(table: String,select: String = "*",as type: T.Type) async -> [T]? {
+    func fetchTable<T: Decodable>(table: SupabaseTable, select: String = "*", filters: [String: Any] = [:], as type: T.Type) async -> [T]? {
         self.errorMessage = nil
         do {
-            let response = try await client
+            var query = client
                 .schema("public")
-                .from(table)
+                .from(table.rawValue)
                 .select(select)
-                .execute()
-            
+
+            for (key, value) in filters {
+                if let stringValue = value as? String {
+                    query = query.eq(key, value: stringValue)
+                } else if let intValue = value as? Int {
+                    query = query.eq(key, value: intValue)
+                } else if let boolValue = value as? Bool {
+                    query = query.eq(key, value: boolValue)
+                } else {
+                    print("Unsupported filter type for key: \(key)")
+                }
+            }
+
+            let response = try await query.execute()
             return try decode(response.data, as: [T].self)
         } catch {
             self.errorMessage = error.localizedDescription
             return []
         }
     }
+
     
-    func insert<T: Codable>(table: String, model: T) async throws -> Error? {
+    func insert<T: Codable>(table: SupabaseTable, model: T) async throws -> Error? {
         do {
             let response = try await client
                 .schema("public")
-                .from(table)
+                .from(table.rawValue)
                 .insert([model])
                 .execute()
             

@@ -79,7 +79,7 @@ extension MusicLibraryView {
     func callGetMusic() {
         Task {
             isLoading = true
-            self.arrayMusic = await supabase.fetchTable(table: "music", as: MusicModel.self) ?? []
+            self.arrayMusic = await supabase.fetchTable(table: .music, as: MusicModel.self) ?? []
             self.isLoading = false
         }
     }

@@ -158,7 +158,7 @@ extension SetAlarmView {
                                         selectedDays: selectedDays,
                                         time: alarmTime,
                                         createdAt: .now)
-            let error = try await supabase.insert(table: "alarms", model: alarmModel)
+            let error = try await supabase.insert(table: .alarms, model: alarmModel)
             self.isLoading = false
             if error == nil {
                 alarmData.selectedHour = selectedHour

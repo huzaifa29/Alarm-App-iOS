@@ -177,7 +177,7 @@ extension SignupView {
             guard let userId = supabase.user?.id.uuidString else { return }
             let userModel = UserModel(id: userId, name: name, email: email, language: language, social_type: socialType, last_login_at: .now, profilePictureURL: nil, createdAt: .now)
             print(userModel)
-            let error = try await supabase.insert(table: "user_profiles", model: userModel)
+            let error = try await supabase.insert(table: .userProfiles, model: userModel)
             self.isLoading = false
             if let errorMessage = error?.localizedDescription {
                 alertMessage = errorMessage

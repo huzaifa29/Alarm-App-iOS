@@ -278,9 +278,9 @@ extension HomeView {
             let selectFilter = """
                     *,
                     music:music_id (*),
-                    user:user_id (*)
+                    user_profiles:user_id (*)
                     """
-            self.arrayAlarms = await supabase.fetchTable(table: "alarms", select: selectFilter, as: AlarmModel.self) ?? []
+            self.arrayAlarms = await supabase.fetchTable(table: .alarms, select: selectFilter, filters: ["user_id": supabase.user?.id.uuidString ?? ""], as: AlarmModel.self) ?? []
             self.isLoading = false
         }
     }

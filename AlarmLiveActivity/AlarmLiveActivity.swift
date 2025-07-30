@@ -99,7 +99,7 @@ struct AlarmLiveActivity: Widget {
             nil
         }
         
-        Text(title ?? "")
+        Text(title ?? "Alarm")
             .font(.title3)
             .fontWeight(.semibold)
             .lineLimit(1)
