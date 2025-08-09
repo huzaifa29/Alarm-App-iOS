@@ -15,7 +15,7 @@ struct FrequencyItemView: View {
             .font(.getFont(.medium, size: 12))
             .foregroundStyle(dataModel.isSelected ?  .custom2D2D40 : .custom9A6C8D)
             .lineLimit(1)
-            .padding(.horizontal, 12)
+            .padding(.horizontal, 15)
             .padding(.vertical, 6)
             .background(
                 Group {
