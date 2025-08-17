@@ -10,6 +10,7 @@ import Foundation
 enum HomeRoute: Hashable {
     case selectAlarmType
     case musicLibrary
+    case audioRecord
     case createAlarm(data: AlarmForm)
     case previewAlarm(data: AlarmForm)
     case setAlarm(data: AlarmForm)
@@ -32,6 +33,8 @@ enum HomeRoute: Hashable {
             return hasher.combine("selectAlarmType")
         case .musicLibrary:
             return hasher.combine("musicLibrary")
+        case .audioRecord:
+            return hasher.combine("audioRecord")
         case .createAlarm:
             return hasher.combine("createAlarm")
         case .previewAlarm:

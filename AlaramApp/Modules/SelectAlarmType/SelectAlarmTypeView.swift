@@ -33,7 +33,7 @@ struct SelectAlarmTypeView: View {
                         case 0:
                             self.path.append(.musicLibrary)
                         case 1:
-                            break
+                            self.path.append(.audioRecord)
                         case 2:
                             break
                         default:

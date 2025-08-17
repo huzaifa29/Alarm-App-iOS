@@ -13,4 +13,14 @@ extension TimeInterval {
         formatter.unitsStyle = .abbreviated
         return formatter.string(from: self) ?? self.formatted()
     }
+    
+    func secondsString() -> String {
+        return String(format: "%02d", getSeconds())
+    }
+    
+    func getSeconds() -> Int {
+        let intVal = Int(self)
+        let seconds = intVal % 60
+        return seconds
+    }
 }
