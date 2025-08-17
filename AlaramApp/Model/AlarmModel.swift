@@ -19,7 +19,7 @@ struct AlarmModel: Codable, Hashable {
     let createdAt: Date?
     var music: MusicModel? = nil
     var voiceName: String?
-    var vocieURL: String?
+    var voiceURL: String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -33,7 +33,7 @@ struct AlarmModel: Codable, Hashable {
         case createdAt = "created_at"
         case music
         case voiceName = "voice_name"
-        case vocie_url = "voiceURL"
+        case voiceURL = "voice_url"
     }
     
     init(userId: String, musicId: String?, name: String?, description: String?, type: String?, selectedDays: [String]?, time: Date?, createdAt: Date?, voiceName: String?, voiceURL: String?) {
@@ -46,7 +46,7 @@ struct AlarmModel: Codable, Hashable {
         self.time = time
         self.createdAt = createdAt
         self.voiceName = voiceName
-        self.vocieURL = voiceURL
+        self.voiceURL = voiceURL
     }
     
     init(from decoder: Decoder) throws {
@@ -61,6 +61,8 @@ struct AlarmModel: Codable, Hashable {
         time = try container.decodeIfPresent(Date.self, forKey: .time)
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
         music = try container.decodeIfPresent(MusicModel.self, forKey: .music)
+        voiceName = try container.decodeIfPresent(String.self, forKey: .voiceName)
+        voiceURL = try container.decodeIfPresent(String.self, forKey: .voiceURL)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -74,6 +76,8 @@ struct AlarmModel: Codable, Hashable {
         try container.encodeIfPresent(selectedDays, forKey: .selectedDays)
         try container.encodeIfPresent(time, forKey: .time)
         try container.encodeIfPresent(createdAt, forKey: .createdAt)
+        try container.encodeIfPresent(voiceName, forKey: .voiceName)
+        try container.encodeIfPresent(voiceURL, forKey: .voiceURL)
     }
     
     func getFormattedTime() -> String? {

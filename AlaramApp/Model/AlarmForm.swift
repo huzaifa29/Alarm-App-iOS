@@ -98,5 +98,6 @@ struct AlarmForm {
 
 enum AlarmType: String {
     case basic
-    case voice
+    case customized
+    case text_to_speech
 }

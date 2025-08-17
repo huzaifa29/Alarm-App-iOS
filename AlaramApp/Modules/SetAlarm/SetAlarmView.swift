@@ -165,7 +165,7 @@ extension SetAlarmView {
             let alarmTime = Date().replacing(hour: selectedHour, minute: selectedMinute)!
             
             let alarmModel = AlarmModel(userId: supabase.user?.id.uuidString ?? "",
-                                        musicId: alarmData.musicData?.id ?? "",
+                                        musicId: alarmData.musicData?.id,
                                         name: alarmData.title,
                                         description: alarmData.desc,
                                         type: alarmData.type.rawValue,

@@ -203,7 +203,7 @@ extension AudioRecordView {
             } else {
                 do {
                     let publicURL = try supabase.getPublicURL(bucket: .voiceFiles, path: uploadPath)
-                    self.path.append(.createAlarm(data: .init(voiceName: self.voiceName, voiceURL: publicURL.absoluteString, type: .voice)))
+                    self.path.append(.createAlarm(data: .init(voiceName: self.voiceName, voiceURL: publicURL.absoluteString, type: .customized)))
                 } catch {
                     print("URL Get Error: \(error)")
                     alertMessage = error.localizedDescription
