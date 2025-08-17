@@ -171,7 +171,9 @@ extension SetAlarmView {
                                         type: alarmData.type.rawValue,
                                         selectedDays: selectedDays,
                                         time: alarmTime,
-                                        createdAt: .now)
+                                        createdAt: .now,
+                                        voiceName: alarmData.voiceName,
+                                        voiceURL: alarmData.voiceURL)
             let error = try await supabase.insert(table: .alarms, model: alarmModel)
             self.isLoading = false
             if let error = error {

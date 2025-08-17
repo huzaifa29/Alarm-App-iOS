@@ -10,7 +10,7 @@ import Foundation
 struct AlarmModel: Codable, Hashable {
     var id: String = UUID().uuidString
     let userId: String
-    let musicId: String
+    let musicId: String?
     let name: String?
     let description: String?
     let type: String?
@@ -18,6 +18,8 @@ struct AlarmModel: Codable, Hashable {
     let time: Date?
     let createdAt: Date?
     var music: MusicModel? = nil
+    var voiceName: String?
+    var vocieURL: String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -30,9 +32,11 @@ struct AlarmModel: Codable, Hashable {
         case time
         case createdAt = "created_at"
         case music
+        case voiceName = "voice_name"
+        case vocie_url = "voiceURL"
     }
     
-    init(userId: String, musicId: String, name: String?, description: String?, type: String?, selectedDays: [String]?, time: Date?, createdAt: Date?) {
+    init(userId: String, musicId: String?, name: String?, description: String?, type: String?, selectedDays: [String]?, time: Date?, createdAt: Date?, voiceName: String?, voiceURL: String?) {
         self.userId = userId
         self.musicId = musicId
         self.name = name
@@ -41,8 +45,10 @@ struct AlarmModel: Codable, Hashable {
         self.selectedDays = selectedDays
         self.time = time
         self.createdAt = createdAt
+        self.voiceName = voiceName
+        self.vocieURL = voiceURL
     }
-
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
@@ -56,7 +62,7 @@ struct AlarmModel: Codable, Hashable {
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
         music = try container.decodeIfPresent(MusicModel.self, forKey: .music)
     }
-
+    
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
@@ -69,14 +75,14 @@ struct AlarmModel: Codable, Hashable {
         try container.encodeIfPresent(time, forKey: .time)
         try container.encodeIfPresent(createdAt, forKey: .createdAt)
     }
-
+    
     func getFormattedTime() -> String? {
         guard let time else { return nil }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "hh:mm a"
         return dateFormatter.string(from: time)
     }
-
+    
     func getSelectedDays() -> [FrequencyData] {
         guard let selectedDays else { return [] }
         return selectedDays.map {

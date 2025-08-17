@@ -47,7 +47,7 @@ struct HomeView: View {
                     MusicLibraryView(path: $path, supabase: .shared)
                     
                 case .audioRecord:
-                    AudioRecordView(path: $path)
+                    AudioRecordView(path: $path, supabase: .shared)
                     
                 case .createAlarm(let data):
                     CreateAlarmView(path: $path, alarmData: data)

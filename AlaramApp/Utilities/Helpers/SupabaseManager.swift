@@ -164,3 +164,27 @@ extension SupabaseManager {
     }
     
 }
+
+// MARK: - Upload
+extension SupabaseManager {
+    func uploadFile(bucket: SupabaseBucket, fileURL: URL, path: String, contentType: String) async throws -> Error? {
+        let bucket = client.storage.from(bucket.rawValue)
+        
+        do {
+            try await bucket.update(path,
+                                    fileURL: fileURL,
+                                    options: FileOptions(cacheControl: "3600",
+                                                         contentType: contentType,
+                                                         upsert: false))
+            return nil
+        } catch {
+            print("Upload File Error: \(error)")
+            return error
+        }
+    }
+    
+    func getPublicURL(bucket: SupabaseBucket, path: String) throws -> URL {
+        let bucket = client.storage.from(bucket.rawValue)
+        return try bucket.getPublicURL(path: path)
+    }
+}

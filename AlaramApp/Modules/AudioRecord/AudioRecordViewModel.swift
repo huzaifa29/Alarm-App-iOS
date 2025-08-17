@@ -23,8 +23,11 @@ class AudioRecordViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate,
     private var windowSamples: [CGFloat] = []   // store samples for 0.5s window
     
     private var maxDuration: TimeInterval = 30   // 🎯 30 seconds limit
-    private var recordingURL: URL {
-        FileManager.default.temporaryDirectory.appendingPathComponent("recording.m4a")
+    
+    let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    var recordingURL: URL {
+        documents.appendingPathComponent("recording.m4a")
+//        FileManager.default.temporaryDirectory.appendingPathComponent("recording.m4a")
     }
     
     override init() {

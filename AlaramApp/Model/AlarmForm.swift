@@ -10,6 +10,8 @@ import AlarmKit
 struct AlarmForm {
     var title = ""
     var desc = ""
+    var voiceName: String?
+    var voiceURL: String?
     var musicData: MusicModel?
     var type: AlarmType = .basic
     
