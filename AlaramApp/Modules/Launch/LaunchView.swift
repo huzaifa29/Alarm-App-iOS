@@ -11,12 +11,12 @@ struct LaunchView: View {
     @EnvironmentObject var viewModel: AuthViewModelImpl
     
     var body: some View {
-        ZStack {
-            PrimaryBackground()
-            
-            Text("Alaram App")
-                .frame(alignment: .center)
+        GeometryReader { geometry in
+            Image(.splash)
+                .resizable()
+                .frame(width: geometry.size.width, height: geometry.size.height)
         }
+        .ignoresSafeArea(edges: .all)
         .onAppear {
             print("Launch View")
             viewModel.updateState()
@@ -26,4 +26,5 @@ struct LaunchView: View {
 
 #Preview {
     LaunchView()
+        .environmentObject(AuthViewModelImpl())
 }
