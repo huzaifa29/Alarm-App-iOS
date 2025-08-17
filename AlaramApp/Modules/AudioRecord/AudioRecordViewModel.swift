@@ -8,7 +8,7 @@
 import AVFoundation
 import Combine
 
-class AudioRecordViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
+class AudioRecordViewModel: NSObject, ObservableObject {
     @Published var amplitudes: [CGFloat] = []
     @Published var isRecording = false
     @Published var isPlaying = false
@@ -24,10 +24,8 @@ class AudioRecordViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate,
     
     private var maxDuration: TimeInterval = 30   // 🎯 30 seconds limit
     
-    let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     var recordingURL: URL {
-        documents.appendingPathComponent("recording.m4a")
-//        FileManager.default.temporaryDirectory.appendingPathComponent("recording.m4a")
+        FileManager.default.temporaryDirectory.appendingPathComponent("recording.m4a")
     }
     
     override init() {
@@ -93,13 +91,6 @@ class AudioRecordViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate,
         timer = nil
     }
     
-    // Called when AVAudioRecorder finishes (after 30s or manual stop)
-    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        DispatchQueue.main.async {
-            self.stopRecording()
-        }
-    }
-    
     // MARK: - Update meters for waveform
     private func updateMeters() {
         guard let recorder = audioRecorder, recorder.isRecording else { return }
@@ -119,7 +110,9 @@ class AudioRecordViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate,
                 DispatchQueue.main.async {
                     self.amplitudes.append(scaled)
                     self.currentRecordIndex = self.amplitudes.count - 1
-                    self.recordingTime = recorder.currentTime
+                    if recorder.currentTime > 0 {
+                        self.recordingTime = recorder.currentTime
+                    }
                 }
             }
             
@@ -172,8 +165,22 @@ class AudioRecordViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate,
         timer?.invalidate()
         timer = nil
     }
-    
-    // Delegate called when playback finishes
+}
+
+// MARK: - AVAudioRecorderDelegate
+extension AudioRecordViewModel: AVAudioRecorderDelegate {
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        DispatchQueue.main.async {
+            if self.recordingTime > 29 {
+                self.recordingTime = self.maxDuration
+            }
+            self.stopRecording()
+        }
+    }
+}
+
+// MARK: - AVAudioPlayerDelegate
+extension AudioRecordViewModel: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         DispatchQueue.main.async {
             self.stopPlayback()
