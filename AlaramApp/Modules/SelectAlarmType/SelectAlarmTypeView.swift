@@ -35,7 +35,7 @@ struct SelectAlarmTypeView: View {
                         case 1:
                             self.path.append(.audioRecord)
                         case 2:
-                            break
+                            self.path.append(.textToSpeechAlarm)
                         default:
                             break
                         }

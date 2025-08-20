@@ -11,4 +11,5 @@ enum SupabaseTable: String {
     case alarms
     case music
     case userProfiles = "user_profiles"
+    case speech
 }
