@@ -12,6 +12,7 @@ enum HomeRoute: Hashable {
     case musicLibrary
     case audioRecord
     case textToSpeechAlarm
+    case selectSpeechVoice(speechData: SpeechModel)
     case createAlarm(data: AlarmForm)
     case previewAlarm(data: AlarmForm)
     case setAlarm(data: AlarmForm)
@@ -22,6 +23,7 @@ enum HomeRoute: Hashable {
         case (.musicLibrary, .musicLibrary): return true
         case (.audioRecord, .audioRecord): return true
         case (.textToSpeechAlarm, .textToSpeechAlarm): return true
+        case (.selectSpeechVoice, .selectSpeechVoice): return true
         case (.createAlarm, .createAlarm): return true
         case (.previewAlarm, .previewAlarm): return true
         case (.setAlarm, .setAlarm): return true
@@ -40,6 +42,8 @@ enum HomeRoute: Hashable {
             return hasher.combine("audioRecord")
         case .textToSpeechAlarm:
             return hasher.combine("textToSpeechAlarm")
+        case .selectSpeechVoice:
+            return hasher.combine("selectSpeechVoice")
         case .createAlarm:
             return hasher.combine("createAlarm")
         case .previewAlarm:

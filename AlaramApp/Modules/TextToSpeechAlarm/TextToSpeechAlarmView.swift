@@ -14,6 +14,7 @@ struct TextToSpeechAlarmView: View {
     @State private var isLoading = false
     @State private var alertMessage = ""
     @State private var showAlert = false
+    @State private var selectedSpeech: SpeechModel?
     
     // Dependencies
     @Binding var path: [HomeRoute]
@@ -33,7 +34,11 @@ struct TextToSpeechAlarmView: View {
                             .foregroundStyle(.black)
                         
                         ForEach(arraySpeech.indices, id: \.self) { index in
-                            getListItem(desc: arraySpeech[index].description ?? "")
+                            let speechData = self.arraySpeech[index]
+                            getListItem(speechData: speechData)
+                                .onTapGesture {
+                                    self.selectedSpeech = speechData
+                                }
                         }
                     }
                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
@@ -41,8 +46,15 @@ struct TextToSpeechAlarmView: View {
                 }
                 .listStyle(.plain)
                 .scrollIndicators(.hidden)
+                
+                PrimaryButton(text: "Use this speech") {
+                    guard let selectedSpeech = self.selectedSpeech else { return }
+                    self.path.append(.selectSpeechVoice(speechData: selectedSpeech))
+                }
+                .opacity(selectedSpeech != nil ? 1 : 0.5)
+                .disabled(selectedSpeech == nil)
             }
-            .padding([.horizontal, .top], 20)
+            .padding(.all, 20)
         }
         .onAppear {
             self.callGetSpeech()
@@ -66,7 +78,7 @@ extension TextToSpeechAlarmView {
     private func getTopView() -> some View {
         Group {
             VStack(spacing: 8) {
-                PrimaryTextField(icon: "", placeholder: "Name your custom speech", text: $speechName)
+                SecondaryTextField(placeholder: "Name your custom speech", text: $speechName)
                 
                 ZStack(alignment: .topLeading) {
                     // Placeholder
@@ -99,14 +111,17 @@ extension TextToSpeechAlarmView {
         }
     }
     
-    private func getListItem(desc: String) -> some View {
-        Text(desc)
-            .font(.getFont(.semiBold, size: 16))
-            .padding(.all, 10)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(.custom9287FF.opacity(0.1))
-            )
+    private func getListItem(speechData: SpeechModel) -> some View {
+        HStack {
+            Text(speechData.description ?? "")
+                .font(.getFont(.semiBold, size: 16))
+            Spacer()
+        }
+        .padding(.all, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(.custom9287FF.opacity(speechData.id == self.selectedSpeech?.id ? 0.2 : 0.1))
+        )
     }
 }
 
