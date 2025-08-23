@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AudioRecordView: View {
     @StateObject private var viewModel = AudioRecordViewModel()
-    @State private var voiceName: String = ""
+    @State private var audioName: String = ""
     @State private var isLoading = false
     @State private var alertMessage = ""
     @State private var showAlert = false
@@ -26,7 +26,7 @@ struct AudioRecordView: View {
             
             VStack(spacing: 20) {
                 
-                PrimaryTextField(icon: "", placeholder: "Name your voice", text: $voiceName)
+                PrimaryTextField(icon: "", placeholder: "Name your voice", text: $audioName)
                 
                 Text("Record your voice")
                     .font(.getFont(.bold, size: 20))
@@ -69,7 +69,7 @@ struct AudioRecordView: View {
                 Spacer()
                 
                 PrimaryButton( text: "Use this Voice") {
-                    if voiceName.isEmpty {
+                    if audioName.isEmpty {
                         alertMessage = "Enter Voice Name"
                     } else if self.viewModel.recordingTime == 0 || !self.viewModel.recordingFileExists() {
                         self.alertMessage = "Record voice to upload"
@@ -203,7 +203,7 @@ extension AudioRecordView {
             } else {
                 do {
                     let publicURL = try supabase.getPublicURL(bucket: .voiceFiles, path: uploadPath)
-                    self.path.append(.createAlarm(data: .init(voiceName: self.voiceName, voiceURL: publicURL.absoluteString, type: .customized)))
+                    self.path.append(.createAlarm(data: .init(audioName: self.audioName, audioURL: publicURL.absoluteString, type: .customized)))
                 } catch {
                     print("URL Get Error: \(error)")
                     alertMessage = error.localizedDescription

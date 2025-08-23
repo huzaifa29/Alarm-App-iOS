@@ -11,6 +11,7 @@ struct AlarmModel: Codable, Hashable {
     var id: String = UUID().uuidString
     let userId: String
     let musicId: String?
+    let speechId: String?
     let name: String?
     let description: String?
     let type: String?
@@ -18,13 +19,16 @@ struct AlarmModel: Codable, Hashable {
     let time: Date?
     let createdAt: Date?
     var music: MusicModel? = nil
-    var voiceName: String?
-    var voiceURL: String?
+    var audioName: String?
+    var audioURL: String?
+    var speech: SpeechModel? = nil
+    var ttsVoiceId: String? = nil
     
     enum CodingKeys: String, CodingKey {
         case id
         case userId = "user_id"
         case musicId = "music_id"
+        case speechId = "speech_id"
         case name
         case description
         case type
@@ -32,21 +36,26 @@ struct AlarmModel: Codable, Hashable {
         case time
         case createdAt = "created_at"
         case music
-        case voiceName = "voice_name"
-        case voiceURL = "voice_url"
+        case audioName = "audio_name"
+        case audioURL = "audio_url"
+        case speech
+        case ttsVoiceId = "tts_voice_id"
     }
     
-    init(userId: String, musicId: String?, name: String?, description: String?, type: String?, selectedDays: [String]?, time: Date?, createdAt: Date?, voiceName: String?, voiceURL: String?) {
+    init(userId: String, alarmData: AlarmForm?, selectedDays: [String]?, time: Date?) {
         self.userId = userId
-        self.musicId = musicId
-        self.name = name
-        self.description = description
-        self.type = type
+        self.musicId = alarmData?.musicData?.id
+        self.speechId = alarmData?.speechData?.id
+        print(speechId)
+        self.name = alarmData?.title
+        self.description = alarmData?.desc
+        self.type = alarmData?.type.rawValue
         self.selectedDays = selectedDays
         self.time = time
-        self.createdAt = createdAt
-        self.voiceName = voiceName
-        self.voiceURL = voiceURL
+        self.createdAt = .now
+        self.audioName = alarmData?.audioName
+        self.audioURL = alarmData?.audioURL
+        self.ttsVoiceId = alarmData?.voiceData?.voiceId
     }
     
     init(from decoder: Decoder) throws {
@@ -54,6 +63,7 @@ struct AlarmModel: Codable, Hashable {
         id = try container.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
         userId = try container.decodeIfPresent(String.self, forKey: .userId) ?? UUID().uuidString
         musicId = try container.decodeIfPresent(String.self, forKey: .musicId) ?? UUID().uuidString
+        speechId = try container.decodeIfPresent(String.self, forKey: .speechId) ?? UUID().uuidString
         name = try container.decodeIfPresent(String.self, forKey: .name)
         description = try container.decodeIfPresent(String.self, forKey: .description)
         type = try container.decodeIfPresent(String.self, forKey: .type)
@@ -61,8 +71,9 @@ struct AlarmModel: Codable, Hashable {
         time = try container.decodeIfPresent(Date.self, forKey: .time)
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
         music = try container.decodeIfPresent(MusicModel.self, forKey: .music)
-        voiceName = try container.decodeIfPresent(String.self, forKey: .voiceName)
-        voiceURL = try container.decodeIfPresent(String.self, forKey: .voiceURL)
+        audioName = try container.decodeIfPresent(String.self, forKey: .audioName)
+        audioURL = try container.decodeIfPresent(String.self, forKey: .audioURL)
+        ttsVoiceId = try container.decodeIfPresent(String.self, forKey: .ttsVoiceId)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -70,14 +81,16 @@ struct AlarmModel: Codable, Hashable {
         try container.encode(id, forKey: .id)
         try container.encode(userId, forKey: .userId)
         try container.encode(musicId, forKey: .musicId)
+        try container.encode(speechId, forKey: .speechId)
         try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(description, forKey: .description)
         try container.encodeIfPresent(type, forKey: .type)
         try container.encodeIfPresent(selectedDays, forKey: .selectedDays)
         try container.encodeIfPresent(time, forKey: .time)
         try container.encodeIfPresent(createdAt, forKey: .createdAt)
-        try container.encodeIfPresent(voiceName, forKey: .voiceName)
-        try container.encodeIfPresent(voiceURL, forKey: .voiceURL)
+        try container.encodeIfPresent(audioName, forKey: .audioName)
+        try container.encodeIfPresent(audioURL, forKey: .audioURL)
+        try container.encodeIfPresent(ttsVoiceId, forKey: .ttsVoiceId)
     }
     
     func getFormattedTime() -> String? {

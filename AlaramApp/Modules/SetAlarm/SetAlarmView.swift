@@ -165,15 +165,9 @@ extension SetAlarmView {
             let alarmTime = Date().replacing(hour: selectedHour, minute: selectedMinute)!
             
             let alarmModel = AlarmModel(userId: supabase.user?.id.uuidString ?? "",
-                                        musicId: alarmData.musicData?.id,
-                                        name: alarmData.title,
-                                        description: alarmData.desc,
-                                        type: alarmData.type.rawValue,
+                                        alarmData: alarmData,
                                         selectedDays: selectedDays,
-                                        time: alarmTime,
-                                        createdAt: .now,
-                                        voiceName: alarmData.voiceName,
-                                        voiceURL: alarmData.voiceURL)
+                                        time: alarmTime)
             let error = try await supabase.insert(table: .alarms, model: alarmModel)
             self.isLoading = false
             if let error = error {

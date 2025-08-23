@@ -115,7 +115,7 @@ extension AlarmItemView {
 }
 
 #Preview {
-    AlarmItemView(alarmData: .init(userId: "", musicId: "", name: "Test", description: "Test", type: "basic", selectedDays: [], time: nil, createdAt: nil, voiceName: nil, voiceURL: nil))
+    AlarmItemView(alarmData: .init(userId: "", alarmData: nil, selectedDays: nil, time: nil))
 }
 
 

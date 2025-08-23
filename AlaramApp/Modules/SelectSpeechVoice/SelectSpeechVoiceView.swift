@@ -13,6 +13,10 @@ struct SelectSpeechVoiceView: View {
     @State private var isLoading = false
     @State private var alertMessage = ""
     @State private var showAlert = false
+    @State private var voices: [VoiceModel] = []
+    @State private var selectedVoiceData: VoiceModel? = nil
+    
+    let api = ElevenLabsAPI()
     
     // Dependencies
     @Binding var path: [HomeRoute]
@@ -20,15 +24,19 @@ struct SelectSpeechVoiceView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            TopBarView<HomeRoute>(path: $path, title: "Text to speech alarm creation")
+            TopBarView<HomeRoute>(path: $path, title: "Choose a voice for speech")
             
             VStack(spacing: 20) {
                 SecondaryTextField(placeholder: "Select Language", text: $language, fieldType: .dropdown)
                 
                 List {
                     VStack(alignment: .leading, spacing: 20) {
-                        ForEach(0...3, id: \.self) { index in
-                            getListItem(name: "Emli")
+                        ForEach(voices.indices, id: \.self) { index in
+                            let voiceData = voices[index]
+                            getVoiceList(data: voiceData)
+                                .onTapGesture {
+                                    self.selectedVoiceData = voiceData
+                                }
                         }
                     }
                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
@@ -38,24 +46,37 @@ struct SelectSpeechVoiceView: View {
                 .scrollIndicators(.hidden)
                 
                 PrimaryButton(text: "Use This Voice") {
-                    print("use this voice")
+                    self.path.append(.createAlarm(data: .init(type: .textToSpeech, speechData: self.selectedSpeech, voiceData: self.selectedVoiceData)))
                 }
+                .opacity(self.selectedVoiceData == nil ? 0.5 : 1)
+                .disabled(self.selectedVoiceData == nil)
             }
             .padding(.all, 20)
         }
+        .loader(isLoading: isLoading)
         .navigationBarHidden(true)
+        .task {
+            isLoading = true
+            do {
+                voices = try await api.fetchVoices()
+                isLoading = false
+            } catch {
+                print("Error loading voices: \(error)")
+                isLoading = false
+            }
+        }
     }
 }
 
 // MARK: - UI Methods
 extension SelectSpeechVoiceView {
-    private func getListItem(name: String) -> some View {
+    private func getVoiceList(data: VoiceModel) -> some View {
         HStack(spacing: 10) {
             Image(.icAvatar)
                 .resizable()
                 .frame(width: 40, height: 40)
             
-            Text(name)
+            Text(data.name)
                 .font(.getFont(.bold, size: 16))
                 .foregroundStyle(.custom433261)
             
@@ -64,6 +85,13 @@ extension SelectSpeechVoiceView {
             Image(.speechPlay)
                 .resizable()
                 .frame(width: 24, height: 24)
+                .onTapGesture {
+                    Task {
+                        self.isLoading = true
+                        await api.speak(text: selectedSpeech.description ?? "", voiceId: data.voiceId)
+                        self.isLoading = false
+                    }
+                }
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 17)
@@ -84,5 +112,5 @@ extension SelectSpeechVoiceView {
 }
 
 #Preview {
-    SelectSpeechVoiceView(path: .constant([]), selectedSpeech: .init(userId: "", name: "", description: "", createdAt: .now))
+    SelectSpeechVoiceView(path: .constant([]), selectedSpeech: .init(id: "", userId: "", name: "", description: "", createdAt: .now))
 }

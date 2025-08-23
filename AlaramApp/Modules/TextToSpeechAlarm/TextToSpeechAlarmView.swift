@@ -157,7 +157,7 @@ extension TextToSpeechAlarmView {
     func callAddSpeech() {
         Task {
             isLoading = true
-            let speechModel = SpeechModel(userId: supabase.user?.id.uuidString ?? "", name: speechName, description: speechText, createdAt: .now)
+            let speechModel = SpeechModel(id: UUID().uuidString, userId: supabase.user?.id.uuidString ?? "", name: speechName, description: speechText, createdAt: .now)
             let error = try await supabase.insert(table: .speech, model: speechModel)
             self.isLoading = false
             if let error = error {

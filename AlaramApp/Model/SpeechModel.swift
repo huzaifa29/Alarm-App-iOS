@@ -9,7 +9,7 @@ import Foundation
 
 struct SpeechModel: Codable, Hashable {
     
-    let id: String = UUID().uuidString
+    let id: String
     let userId: String
     let name: String?
     let description: String?

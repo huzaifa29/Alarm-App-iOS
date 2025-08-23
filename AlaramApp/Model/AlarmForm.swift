@@ -10,10 +10,12 @@ import AlarmKit
 struct AlarmForm {
     var title = ""
     var desc = ""
-    var voiceName: String?
-    var voiceURL: String?
+    var audioName: String?
+    var audioURL: String?
     var musicData: MusicModel?
     var type: AlarmType = .basic
+    var speechData: SpeechModel?
+    var voiceData: VoiceModel?
     
     var selectedDate = Date.now
     var selectedDays = Set<Locale.Weekday>()
@@ -99,5 +101,5 @@ struct AlarmForm {
 enum AlarmType: String {
     case basic
     case customized
-    case text_to_speech
+    case textToSpeech = "text_to_speech"
 }
