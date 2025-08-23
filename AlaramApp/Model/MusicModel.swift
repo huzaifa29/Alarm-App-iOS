@@ -13,6 +13,6 @@ struct MusicModel: Codable, Hashable {
     let name: String?
     let url: String?
     let thumbnail: String?
-    let height = CGFloat.random(in: 86...227)
+    var height = CGFloat.random(in: 86...227)
     
 }

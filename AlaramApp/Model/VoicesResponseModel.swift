@@ -14,9 +14,13 @@ struct VoicesResponseModel: Codable {
 struct VoiceModel: Codable {
     let voiceId: String
     let name: String
+    let labels: [String: String]?
+        
+    var gender: String? { labels?["gender"] }
     
     enum CodingKeys: String, CodingKey {
         case voiceId = "voice_id"
         case name
+        case labels
     }
 }

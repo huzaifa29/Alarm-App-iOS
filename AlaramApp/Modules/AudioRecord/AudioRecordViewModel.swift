@@ -39,9 +39,11 @@ class AudioRecordViewModel: NSObject, ObservableObject {
     
     // MARK: - Request Microphone Permission
     private func requestPermission() {
-        AVAudioSession.sharedInstance().requestRecordPermission { granted in
-            if !granted {
-                print("Microphone access denied. Add NSMicrophoneUsageDescription in Info.plist")
+        AVAudioApplication.requestRecordPermission { granted in
+            if granted {
+                print("Microphone access granted")
+            } else {
+                print("Microphone access denied")
             }
         }
     }

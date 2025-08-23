@@ -23,7 +23,6 @@ struct FrequencyView: View {
     @State var selectedIndex: Int? = nil
     var isMultiSelectionEnabled = false
     
-    @Environment(\.displayScale) var displayScale
     let screenWidth = UIScreen.main.bounds.width
     @State var itemsInFirstRow = 4
     
@@ -62,7 +61,6 @@ struct FrequencyView: View {
             Spacer()
         }
         .onAppear {
-            print(displayScale)
             if screenWidth >= 287 {
                 itemsInFirstRow = 4
             } else {

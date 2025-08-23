@@ -33,7 +33,7 @@ struct SelectSpeechVoiceView: View {
                     VStack(alignment: .leading, spacing: 20) {
                         ForEach(voices.indices, id: \.self) { index in
                             let voiceData = voices[index]
-                            getVoiceList(data: voiceData)
+                            getVoiceListItem(data: voiceData)
                                 .onTapGesture {
                                     self.selectedVoiceData = voiceData
                                 }
@@ -70,13 +70,13 @@ struct SelectSpeechVoiceView: View {
 
 // MARK: - UI Methods
 extension SelectSpeechVoiceView {
-    private func getVoiceList(data: VoiceModel) -> some View {
+    private func getVoiceListItem(data: VoiceModel) -> some View {
         HStack(spacing: 10) {
             Image(.icAvatar)
                 .resizable()
                 .frame(width: 40, height: 40)
             
-            Text(data.name)
+            Text(data.name + String(format: "(%@)", data.gender?.capitalized ?? ""))
                 .font(.getFont(.bold, size: 16))
                 .foregroundStyle(.custom433261)
             

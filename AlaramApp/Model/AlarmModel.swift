@@ -46,7 +46,6 @@ struct AlarmModel: Codable, Hashable {
         self.userId = userId
         self.musicId = alarmData?.musicData?.id
         self.speechId = alarmData?.speechData?.id
-        print(speechId)
         self.name = alarmData?.title
         self.description = alarmData?.desc
         self.type = alarmData?.type.rawValue
