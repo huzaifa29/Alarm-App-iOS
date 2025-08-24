@@ -35,10 +35,10 @@ struct MusicLibraryView: View {
                                 if let url = musicData.url, let audioURL = URL(string: url) {
                                     self.selectedMusic = musicData
                                     if audioPlayer.isPlaying && audioPlayer.url == audioURL {
-                                        audioPlayer.stopAudio()
+                                        audioPlayer.stop()
                                     } else {
-                                        audioPlayer.stopAudio()
-                                        audioPlayer.playAudio(from: audioURL)
+                                        audioPlayer.stop()
+                                        audioPlayer.playFromURL(audioURL)
                                     }
                                 }
                             }
@@ -68,7 +68,7 @@ struct MusicLibraryView: View {
             self.callGetMusic()
         }
         .onDisappear {
-            audioPlayer.stopAudio()
+            audioPlayer.stop()
         }
         .navigationBarHidden(true)
     }

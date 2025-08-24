@@ -15,6 +15,7 @@ struct SelectSpeechVoiceView: View {
     @State private var showAlert = false
     @State private var voices: [VoiceModel] = []
     @State private var selectedVoiceData: VoiceModel? = nil
+    @StateObject private var audioPlayer = AudioPlayer()
     
     let api = ElevenLabsAPI()
     
@@ -87,9 +88,17 @@ extension SelectSpeechVoiceView {
                 .frame(width: 24, height: 24)
                 .onTapGesture {
                     Task {
-                        self.isLoading = true
-                        await api.speak(text: selectedSpeech.description ?? "", voiceId: data.voiceId)
-                        self.isLoading = false
+                        do {
+                            self.isLoading = true
+                            audioPlayer.stop()
+                            let audioData = try await api.fetchSpeechAudio(text: selectedSpeech.description ?? "", voiceId: data.voiceId)
+                            audioPlayer.playFromData(audioData)
+                            self.isLoading = false
+                        } catch {
+                            print("TTS Error:", error.localizedDescription)
+                            self.isLoading = false
+                            audioPlayer.stop()
+                        }
                     }
                 }
         }

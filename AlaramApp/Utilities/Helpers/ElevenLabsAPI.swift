@@ -10,10 +10,10 @@ import AVFoundation
 
 class ElevenLabsAPI {
     private let apiKey = "sk_a4fc19f4cab076198527c286b678be5289763ee2edf9a9cb"
-    private var player: AVAudioPlayer?
+    private let baseURL = "https://api.elevenlabs.io/v1/"
     
     func fetchVoices() async throws -> [VoiceModel] {
-        guard let url = URL(string: "https://api.elevenlabs.io/v1/voices") else {
+        guard let url = URL(string: baseURL + "voices") else {
             return []
         }
         
@@ -33,17 +33,16 @@ class ElevenLabsAPI {
         return decoded.voices
     }
     
-    func speak(text: String, voiceId: String) async {
-        stopAudio()
-        guard let url = URL(string: "https://api.elevenlabs.io/v1/text-to-speech/\(voiceId)") else {
-            return
+    func fetchSpeechAudio(text: String, voiceId: String) async throws -> Data {
+        guard let url = URL(string: baseURL + "text-to-speech/\(voiceId)") else {
+            throw URLError(.badURL)
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(apiKey, forHTTPHeaderField: "xi-api-key")
-
+        
         // Request body
         let body: [String: Any] = [
             "text": text,
@@ -52,32 +51,23 @@ class ElevenLabsAPI {
                 "similarity_boost": 0.75
             ]
         ]
-
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-
-        do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            guard let httpResponse = response as? HTTPURLResponse,
-                  httpResponse.statusCode == 200 else {
-                print("TTS request failed: \(response)")
-                return
-            }
-
-            try playAudio(data: data)
-        } catch {
-            print("Error fetching TTS: \(error)")
+        
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
         }
-    }
-
-    private func playAudio(data: Data) throws {
-        player = try AVAudioPlayer(data: data)
-        player?.prepareToPlay()
-        player?.play()
-    }
-    
-    func stopAudio() {
-        player?.stop()
-        player = nil
+        
+        guard httpResponse.statusCode == 200 else {
+            throw NSError(
+                domain: "TTSService",
+                code: httpResponse.statusCode,
+                userInfo: [NSLocalizedDescriptionKey: "TTS request failed with status code \(httpResponse.statusCode)"]
+            )
+        }
+        
+        return data
     }
 }

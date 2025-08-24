@@ -19,11 +19,11 @@ struct AudioPlayerView: View {
                 .font(.title)
             
             Button("Play Audio") {
-                audioPlayer.playAudio(from: audioURL)
+                audioPlayer.playFromURL(audioURL)
             }
 
             Button("Stop Audio") {
-                audioPlayer.stopAudio()
+                audioPlayer.stop()
             }
         }
         .padding()
