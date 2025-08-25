@@ -53,7 +53,7 @@ struct HomeView: View {
                     TextToSpeechAlarmView(path: $path, supabase: .shared)
                     
                 case .selectSpeechVoice(let speechData):
-                    SelectSpeechVoiceView(path: $path, selectedSpeech: speechData)
+                    SelectSpeechVoiceView(path: $path, selectedSpeech: speechData, supabase: .shared)
                     
                 case .createAlarm(let data):
                     CreateAlarmView(path: $path, alarmData: data)

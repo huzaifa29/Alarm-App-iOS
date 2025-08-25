@@ -183,6 +183,17 @@ extension SupabaseManager {
         }
     }
     
+    func uploadData(bucket: SupabaseBucket, data: Data, path: String) async throws -> Error? {
+        let bucket = client.storage.from(bucket.rawValue)
+        do {
+            try await bucket.update(path, data: data)
+            return nil
+        } catch {
+            print("Upload Data Error: \(error)")
+            return error
+        }
+    }
+    
     func getPublicURL(bucket: SupabaseBucket, path: String) throws -> URL {
         let bucket = client.storage.from(bucket.rawValue)
         return try bucket.getPublicURL(path: path)

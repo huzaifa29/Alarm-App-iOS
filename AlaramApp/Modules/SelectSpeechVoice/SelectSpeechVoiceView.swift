@@ -11,10 +11,11 @@ struct SelectSpeechVoiceView: View {
     @State private var language: String = ""
     @State private var arraySpeech = [SpeechModel]()
     @State private var isLoading = false
-    @State private var alertMessage = ""
-    @State private var showAlert = false
+    @State private var alertData = AlertData()
     @State private var voices: [VoiceModel] = []
+    @State private var uploadPath = ""
     @State private var selectedVoiceData: VoiceModel? = nil
+    @State private var voiceDict: [String: Data] = [:] // string = voiceId
     @StateObject private var audioPlayer = AudioPlayer()
     
     let api = ElevenLabsAPI()
@@ -22,6 +23,7 @@ struct SelectSpeechVoiceView: View {
     // Dependencies
     @Binding var path: [HomeRoute]
     var selectedSpeech: SpeechModel
+    var supabase: SupabaseManager
     
     var body: some View {
         VStack(spacing: 0) {
@@ -47,24 +49,30 @@ struct SelectSpeechVoiceView: View {
                 .scrollIndicators(.hidden)
                 
                 PrimaryButton(text: "Use This Voice") {
-                    self.path.append(.createAlarm(data: .init(type: .textToSpeech, speechData: self.selectedSpeech, voiceData: self.selectedVoiceData)))
+                    guard let selectedVoiceData else { return }
+                    if let voiceData = voiceDict[selectedVoiceData.voiceId] {
+                        self.uploadVoice(data: voiceData)
+                    } else {
+                        self.callGetSpeechAudio(voiceId: selectedVoiceData.voiceId) { data in
+                            if let audioData = data {
+                                self.uploadVoice(data: audioData)
+                            }
+                        }
+                    }
                 }
-                .opacity(self.selectedVoiceData == nil ? 0.5 : 1)
-                .disabled(self.selectedVoiceData == nil)
+                .opacity(selectedVoiceData == nil ? 0.5 : 1)
+                .disabled(selectedVoiceData == nil)
             }
             .padding(.all, 20)
         }
         .loader(isLoading: isLoading)
+        .messageAlert($alertData)
         .navigationBarHidden(true)
-        .task {
-            isLoading = true
-            do {
-                voices = try await api.fetchVoices()
-                isLoading = false
-            } catch {
-                print("Error loading voices: \(error)")
-                isLoading = false
-            }
+        .onAppear {
+            self.callGetVoices()
+        }
+        .onDisappear {
+            audioPlayer.stop()
         }
     }
 }
@@ -87,17 +95,14 @@ extension SelectSpeechVoiceView {
                 .resizable()
                 .frame(width: 24, height: 24)
                 .onTapGesture {
-                    Task {
-                        do {
-                            self.isLoading = true
-                            audioPlayer.stop()
-                            let audioData = try await api.fetchSpeechAudio(text: selectedSpeech.description ?? "", voiceId: data.voiceId)
-                            audioPlayer.playFromData(audioData)
-                            self.isLoading = false
-                        } catch {
-                            print("TTS Error:", error.localizedDescription)
-                            self.isLoading = false
-                            audioPlayer.stop()
+                    audioPlayer.stop()
+                    if let voiceData = voiceDict[data.voiceId] {
+                        audioPlayer.playFromData(voiceData)
+                    } else {
+                        self.callGetSpeechAudio(voiceId: data.voiceId) { audioData in
+                            if let audioData {
+                                audioPlayer.playFromData(audioData)
+                            }
                         }
                     }
                 }
@@ -120,6 +125,65 @@ extension SelectSpeechVoiceView {
     }
 }
 
+// MARK: - API Calls
+extension SelectSpeechVoiceView {
+    func callGetVoices() {
+        Task {
+            isLoading = true
+            do {
+                voices = try await api.fetchVoices()
+                isLoading = false
+            } catch {
+                print("Error loading voices: \(error)")
+                isLoading = false
+            }
+        }
+    }
+    
+    func callGetSpeechAudio(voiceId: String, completion: @escaping (Data?) -> Void) {
+        Task {
+            isLoading = true
+            do {
+                let audioData = try await api.fetchSpeechAudio(
+                    text: selectedSpeech.description ?? "",
+                    voiceId: voiceId
+                )
+                isLoading = false
+                completion(audioData)
+            } catch {
+                isLoading = false
+                alertData.show(message: error.localizedDescription)
+            }
+        }
+    }
+    
+    func uploadVoice(data: Data) {
+        guard let userId = supabase.user?.id.uuidString else { return }
+        if uploadPath.isEmpty {
+            uploadPath =  userId + "/text-to-speech/" + UUID().uuidString + ".mp3"
+        }
+        
+        Task {
+            isLoading = true
+            let error = try await supabase.uploadData(bucket: .voiceFiles, data: data, path: uploadPath)
+            isLoading = false
+            if let error {
+                alertData.show(message: error.localizedDescription)
+            } else {
+                do {
+                    let publicURL = try supabase.getPublicURL(bucket: .voiceFiles, path: uploadPath)
+                    self.path.append(.createAlarm(data: .init(audioURL: publicURL.absoluteString,
+                                                              type: .textToSpeech,
+                                                              speechData: self.selectedSpeech)))
+                } catch {
+                    print("URL Get Error: \(error)")
+                    alertData.show(message: error.localizedDescription)
+                }
+            }
+        }
+    }
+}
+
 #Preview {
-    SelectSpeechVoiceView(path: .constant([]), selectedSpeech: .init(id: "", userId: "", name: "", description: "", createdAt: .now))
+    SelectSpeechVoiceView(path: .constant([]), selectedSpeech: .init(id: "", userId: "", name: "", description: "", createdAt: .now), supabase: .shared)
 }
