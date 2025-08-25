@@ -10,18 +10,17 @@ import Foundation
 struct AlertData {
     var title: String = ""
     var message: String = ""
-
-    var isPresented: Bool {
-        !title.isEmpty || !message.isEmpty
-    }
-
+    var isPresented: Bool = false
+    
     mutating func show(title: String = "", message: String) {
         self.title = title
         self.message = message
+        self.isPresented = true
     }
-
+    
     mutating func dismiss() {
         title = ""
         message = ""
+        isPresented = false
     }
 }
