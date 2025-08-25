@@ -19,8 +19,7 @@ struct SignupView: View {
     @State private var password = ""
     @State private var confirmPassword = ""
     @State private var isLoading = false
-    @State private var showAlert = false
-    @State private var alertMessage = ""
+    @State private var alertData = AlertData()
     @State private var isSignupSuccess = false
     @State private var showGoogleSignIn = false
     @State private var isPresentTabbar = false
@@ -41,31 +40,9 @@ struct SignupView: View {
                 
                 Spacer()
             }
-            
-            if isLoading {
-                LoaderView()
-            }
         }
-        .onChange(of: alertMessage) {
-            if !alertMessage.isEmpty {
-                showAlert =  true
-            } else {
-                showAlert = false
-            }
-        }
-        .alert(alertMessage, isPresented: $showAlert) {
-            Button("OK", role: .cancel) {
-                if isSignupSuccess {
-                    name = ""
-                    email = ""
-                    language = ""
-                    password = ""
-                    confirmPassword = ""
-                    self.path.removeLast()
-                }
-                alertMessage = ""
-            }
-        }
+        .loader(isLoading: isLoading)
+        .messageAlert($alertData)
         .sheet(isPresented: $showGoogleSignIn) {
             GoogleSignInWrapper { success, error in
                 showGoogleSignIn = false
@@ -77,11 +54,11 @@ struct SignupView: View {
                         if errorMessage.isEmpty {
                             self.isPresentTabbar = true
                         } else {
-                            self.alertMessage = errorMessage
+                            alertData.show(message: errorMessage)
                         }
                     }
                 } else {
-                    alertMessage = error ?? "Some thing went wrong"
+                    alertData.show(message: error ?? "Some thing went wrong")
                 }
             }
         }
@@ -174,7 +151,7 @@ extension SignupView {
             isLoading = true
             let error = try await supabase.signUp(email: email, password: password, name: name, language: language)
             if let errorMessage = error?.localizedDescription {
-                alertMessage = errorMessage
+                alertData.show(message: errorMessage)
             } else {
                 self.callCreateUser()
             }
@@ -188,10 +165,10 @@ extension SignupView {
             let error = try await supabase.insert(table: .userProfiles, model: userModel)
             self.isLoading = false
             if let errorMessage = error?.localizedDescription {
-                alertMessage = errorMessage
+                alertData.show(message: errorMessage)
             } else {
                 self.isSignupSuccess = true
-                alertMessage = "Account Created Successfully"
+                alertData.show(message: "Account Created Successfully")
             }
         }
     }
@@ -201,23 +178,23 @@ extension SignupView {
 extension SignupView {
     func validateFields() -> Bool {
         if let name = name.isValid(for: .requiredField(field: "Name")) {
-            alertMessage = name
+            alertData.show(message: name)
             return false
         }
         if let emailError = email.isValid(for: .email) {
-            alertMessage = emailError
+            alertData.show(message: emailError)
             return false
         }
         if let passwordError = password.isValid(for: .requiredField(field: "Password")) {
-            alertMessage = passwordError
+            alertData.show(message: passwordError)
             return false
         }
         if let confirmPasswordError = confirmPassword.isValid(for: .requiredField(field: "Confirm Password")) {
-            alertMessage = confirmPasswordError
+            alertData.show(message: confirmPasswordError)
             return false
         }
         if password != confirmPassword {
-            alertMessage = "Password Mismatch"
+            alertData.show(message: "Password Mismatch")
             return false
         }
         return true

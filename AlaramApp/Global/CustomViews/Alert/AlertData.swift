@@ -12,6 +12,18 @@ struct AlertData {
     var message: String = ""
     var isPresented: Bool = false
     
+    init() {
+        self.title = ""
+        self.message = ""
+        self.isPresented = false
+    }
+    
+    private init(title: String, message: String, isPresented: Bool) {
+        self.title = title
+        self.message = message
+        self.isPresented = isPresented
+    }
+    
     mutating func show(title: String = "", message: String) {
         self.title = title
         self.message = message

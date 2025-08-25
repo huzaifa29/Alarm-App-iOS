@@ -13,8 +13,7 @@ struct SigninView: View {
     @State private var path = [AuthRoute]()
     @State private var isPresentTabbar = false
     @State private var isLoading = false
-    @State private var showAlert = false
-    @State private var alertMessage = ""
+    @State private var alertData = AlertData()
     @State private var showGoogleSignIn = false
     
     let supabase: SupabaseManager
@@ -32,26 +31,12 @@ struct SigninView: View {
                     
                     Spacer()
                 }
-                
-                if isLoading {
-                    LoaderView()
-                }
             }
             .onAppear {
                 AppDefaults.onboardingShown = true
             }
-            .onChange(of: alertMessage) {
-                if !alertMessage.isEmpty {
-                    showAlert =  true
-                } else {
-                    showAlert = false
-                }
-            }
-            .alert(alertMessage, isPresented: $showAlert) {
-                Button("OK", role: .cancel) {
-                    alertMessage = ""
-                }
-            }
+            .loader(isLoading: isLoading)
+            .messageAlert($alertData)
             .fullScreenCover(isPresented: $isPresentTabbar) {
                 TabbarView()
             }
@@ -66,11 +51,11 @@ struct SigninView: View {
                             if errorMessage.isEmpty {
                                 self.isPresentTabbar = true
                             } else {
-                                self.alertMessage = errorMessage
+                                alertData.show(message: errorMessage)
                             }
                         }
                     } else {
-                        alertMessage = error ?? "Some thing went wrong"
+                        alertData.show(message: error ?? "Some thing went wrong")
                     }
                 }
             }
@@ -184,7 +169,7 @@ extension SigninView {
             let success = await supabase.signIn(email: email, password: password)
             isPresentTabbar = success
             if let errorMessage = supabase.errorMessage {
-                alertMessage = errorMessage
+                alertData.show(message: errorMessage)
             }
             isLoading = false
         }
@@ -196,11 +181,11 @@ extension SigninView {
 extension SigninView {
     func validateFields() -> Bool {
         if let emailError = email.isValid(for: .email) {
-            alertMessage = emailError
+            alertData.show(message: emailError)
             return false
         }
         if let passwordError = password.isValid(for: .requiredField(field: "Password")) {
-            alertMessage = passwordError
+            alertData.show(message: passwordError)
             return false
         }
         return true

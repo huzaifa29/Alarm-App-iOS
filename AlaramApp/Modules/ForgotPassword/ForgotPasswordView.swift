@@ -12,8 +12,7 @@ struct ForgotPasswordView: View {
     
     @State private var email = ""
     @State private var isLoading = false
-    @State private var showAlert = false
-    @State private var alertMessage = ""
+    @State private var alertData = AlertData()
     @State private var isResetPasswordSuccess = false
     
     let supabase: SupabaseManager
@@ -35,26 +34,9 @@ struct ForgotPasswordView: View {
                 
                 Spacer()
             }
-            
-            if isLoading {
-                LoaderView()
-            }
         }
-        .onChange(of: alertMessage) {
-            if !alertMessage.isEmpty {
-                showAlert =  true
-            } else {
-                showAlert = false
-            }
-        }
-        .alert(alertMessage, isPresented: $showAlert) {
-            Button("OK", role: .cancel) {
-                if isResetPasswordSuccess {
-                    self.path.removeLast()
-                }
-                alertMessage = ""
-            }
-        }
+        .loader(isLoading: isLoading)
+        .messageAlert($alertData)
         .navigationBarHidden(true)
         .ignoresSafeArea(edges: .all)
         
@@ -95,9 +77,9 @@ extension ForgotPasswordView {
             let success = await supabase.resetPassword(email: email)
             isResetPasswordSuccess = success
             if let errorMessage = supabase.errorMessage {
-                alertMessage = errorMessage
+                alertData.show(message: errorMessage)
             } else {
-                alertMessage = "Reset Password Link Sent"
+                alertData.show(message: "Reset Password Link Sent")
             }
             isLoading = false
         }
@@ -109,7 +91,7 @@ extension ForgotPasswordView {
 extension ForgotPasswordView {
     func validateFields() -> Bool {
         if let emailError = email.isValid(for: .email) {
-            alertMessage = emailError
+            alertData.show(message: emailError)
             return false
         }
         return true

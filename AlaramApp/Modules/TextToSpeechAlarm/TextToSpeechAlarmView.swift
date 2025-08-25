@@ -12,8 +12,7 @@ struct TextToSpeechAlarmView: View {
     @State private var speechText: String = ""
     @State private var arraySpeech = [SpeechModel]()
     @State private var isLoading = false
-    @State private var alertMessage = ""
-    @State private var showAlert = false
+    @State private var alertData = AlertData()
     @State private var selectedSpeech: SpeechModel?
     
     // Dependencies
@@ -59,15 +58,8 @@ struct TextToSpeechAlarmView: View {
         .onAppear {
             self.callGetSpeech()
         }
-        .onChange(of: alertMessage) {
-            showAlert = !alertMessage.isEmpty
-        }
-        .alert(alertMessage, isPresented: $showAlert) {
-            Button("OK", role: .cancel) {
-                alertMessage = ""
-            }
-        }
         .loader(isLoading: isLoading)
+        .messageAlert($alertData)
         .navigationBarHidden(true)
         
     }
@@ -129,11 +121,11 @@ extension TextToSpeechAlarmView {
 extension TextToSpeechAlarmView {
     func validateFields() -> Bool {
         if let speechName = speechName.isValid(for: .requiredField(field: "Speech Name")) {
-            alertMessage = speechName
+            alertData.show(message: speechName)
             return false
         }
         if let speechText = speechText.isValid(for: .requiredField(field: "Speech Text")) {
-            alertMessage = speechText
+            alertData.show(message: speechText)
             return false
         }
         return true
@@ -161,7 +153,7 @@ extension TextToSpeechAlarmView {
             let error = try await supabase.insert(table: .speech, model: speechModel)
             self.isLoading = false
             if let error = error {
-                alertMessage = error.localizedDescription
+                alertData.show(message: error.localizedDescription)
             } else {
                 speechName = ""
                 speechText = ""

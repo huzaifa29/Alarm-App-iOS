@@ -59,10 +59,6 @@ struct MusicLibraryView: View {
                 }
                 .padding(.all, 20)
             }
-            
-            if isLoading {
-                LoaderView()
-            }
         }
         .onAppear {
             self.callGetMusic()
@@ -70,6 +66,7 @@ struct MusicLibraryView: View {
         .onDisappear {
             audioPlayer.stop()
         }
+        .loader(isLoading: isLoading)
         .navigationBarHidden(true)
     }
 }

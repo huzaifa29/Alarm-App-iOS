@@ -14,9 +14,9 @@ struct SetAlarmView: View {
     @State private var selectedMinute: Int = 30
     @State private var repeatDays: String = ""
     @State private var isLoading = false
-    @State private var showAlert = false
-    @State private var alertMessage = ""
+    @State private var alertData = AlertData()
     
+    // Dependencies
     @Binding var path: [HomeRoute]
     @State var alarmData: AlarmForm
     let supabase: SupabaseManager
@@ -139,19 +139,8 @@ struct SetAlarmView: View {
                 repeatDays.removeLast(2)
             }
         }
-        .onChange(of: alertMessage) {
-            if !alertMessage.isEmpty {
-                showAlert =  true
-            } else {
-                showAlert = false
-            }
-        }
-        .alert(alertMessage, isPresented: $showAlert) {
-            Button("OK", role: .cancel) {
-                alertMessage = ""
-            }
-        }
         .loader(isLoading: isLoading)
+        .messageAlert($alertData)
         .navigationBarHidden(true)
     }
 }
@@ -171,7 +160,7 @@ extension SetAlarmView {
             let error = try await supabase.insert(table: .alarms, model: alarmModel)
             self.isLoading = false
             if let error = error {
-                alertMessage = error.localizedDescription
+                alertData.show(message: error.localizedDescription)
             } else {
                 alarmData.selectedHour = selectedHour
                 alarmData.selectedMinute = selectedMinute

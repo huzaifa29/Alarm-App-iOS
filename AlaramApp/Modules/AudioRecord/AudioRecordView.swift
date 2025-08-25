@@ -11,8 +11,7 @@ struct AudioRecordView: View {
     @StateObject private var viewModel = AudioRecordViewModel()
     @State private var audioName: String = ""
     @State private var isLoading = false
-    @State private var alertMessage = ""
-    @State private var showAlert = false
+    @State private var alertData = AlertData()
     @State private var uploadPath = ""
     @State private var showPlayer = false
     
@@ -70,9 +69,9 @@ struct AudioRecordView: View {
                 
                 PrimaryButton( text: "Use this Voice") {
                     if audioName.isEmpty {
-                        alertMessage = "Enter Voice Name"
+                        alertData.show(message: "Enter Voice Name")
                     } else if self.viewModel.recordingTime == 0 || !self.viewModel.recordingFileExists() {
-                        self.alertMessage = "Record voice to upload"
+                        alertData.show(message: "Record voice to upload")
                     } else {
                         self.uploadFile()
                     }
@@ -84,19 +83,8 @@ struct AudioRecordView: View {
             
             Spacer()
         }
-        .onChange(of: alertMessage) {
-            if !alertMessage.isEmpty {
-                showAlert =  true
-            } else {
-                showAlert = false
-            }
-        }
-        .alert(alertMessage, isPresented: $showAlert) {
-            Button("OK", role: .cancel) {
-                alertMessage = ""
-            }
-        }
         .loader(isLoading: self.isLoading)
+        .messageAlert($alertData)
         .navigationBarHidden(true)
     }
 }
@@ -199,14 +187,14 @@ extension AudioRecordView {
             let error = try await supabase.uploadFile(bucket: .voiceFiles, fileURL: viewModel.recordingURL, path: uploadPath, contentType: "audio/m4a")
             self.isLoading = false
             if let error = error {
-                alertMessage = error.localizedDescription
+                alertData.show(message: error.localizedDescription)
             } else {
                 do {
                     let publicURL = try supabase.getPublicURL(bucket: .voiceFiles, path: uploadPath)
                     self.path.append(.createAlarm(data: .init(audioName: self.audioName, audioURL: publicURL.absoluteString, type: .customized)))
                 } catch {
                     print("URL Get Error: \(error)")
-                    alertMessage = error.localizedDescription
+                    alertData.show(message: error.localizedDescription)
                 }
             }
         }
