@@ -31,6 +31,7 @@ struct SelectSpeechVoiceView: View {
             
             VStack(spacing: 20) {
                 SecondaryTextField(placeholder: "Select Language", text: $language, fieldType: .dropdown)
+                    .padding(.horizontal, 20)
                 
                 List {
                     VStack(alignment: .leading, spacing: 20) {
@@ -42,13 +43,13 @@ struct SelectSpeechVoiceView: View {
                                 }
                         }
                     }
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    .listRowInsets(EdgeInsets(top: 1, leading: 0, bottom: 0, trailing: 0))
                     .listRowSeparator(.hidden)
                 }
                 .listStyle(.plain)
                 .scrollIndicators(.hidden)
                 
-                PrimaryButton(text: "Use This Voice") {
+                SecondaryButton(text: "Use This Voice") {
                     guard let selectedVoiceData else { return }
                     if let audioData = cachedAudio[selectedVoiceData.voiceId] {
                         self.uploadVoice(data: audioData)
@@ -60,10 +61,11 @@ struct SelectSpeechVoiceView: View {
                         }
                     }
                 }
+                .padding(.horizontal, 20)
                 .opacity(selectedVoiceData == nil ? 0.5 : 1)
                 .disabled(selectedVoiceData == nil)
             }
-            .padding(.all, 20)
+            .padding(.vertical, 20)
         }
         .loader(isLoading: isLoading)
         .messageAlert($alertData)
@@ -85,14 +87,16 @@ extension SelectSpeechVoiceView {
                 .resizable()
                 .frame(width: 40, height: 40)
             
-            Text(data.name + String(format: "(%@)", data.gender?.capitalized ?? ""))
+            Text(data.name + String(format: " (%@)", data.gender?.capitalized ?? ""))
                 .font(.getFont(.bold, size: 16))
-                .foregroundStyle(.custom433261)
+                .foregroundStyle(isSelectedVoice(data) ? .white : .custom433261)
             
             Spacer()
             
             Image(.speechPlay)
                 .resizable()
+                .renderingMode(.template)
+                .foregroundStyle(isSelectedVoice(data) ? .white : .customA067D0)
                 .frame(width: 24, height: 24)
                 .onTapGesture {
                     audioPlayer.stop()
@@ -108,20 +112,24 @@ extension SelectSpeechVoiceView {
                 }
         }
         .padding(.horizontal, 10)
-        .padding(.vertical, 17)
+        .frame(height: 60)
         .background(
             RoundedRectangle(cornerRadius: 10)
-                .fill(.customFFF6FB)
+                .fill(isSelectedVoice(data) ? .hexFFBDD3 : .customFFF6FB)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(
-                            LinearGradient(colors: [.white.opacity(0), .white, .white.opacity(0)],
-                                           startPoint: .top,
-                                           endPoint: .bottom),
-                            lineWidth: 1.5
-                        )
+                        .stroke(isSelectedVoice(data) ? .clear : .hexECBBE8, lineWidth: 1.5)
                 )
         )
+        .padding(.horizontal, 20)
+        .shadow(color: .black.opacity(0.10), radius: 14, x: 0, y: 0)
+    }
+}
+
+// MARK: - Methods
+extension SelectSpeechVoiceView {
+    func isSelectedVoice(_ data: VoiceModel?) -> Bool {
+        return selectedVoiceData?.voiceId == data?.voiceId
     }
 }
 
