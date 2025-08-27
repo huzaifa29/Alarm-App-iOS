@@ -15,7 +15,7 @@ struct SelectSpeechVoiceView: View {
     @State private var voices: [VoiceModel] = []
     @State private var uploadPath = ""
     @State private var selectedVoiceData: VoiceModel? = nil
-    @State private var voiceDict: [String: Data] = [:] // string = voiceId
+    @State private var cachedAudio: [String: Data] = [:] // string = voiceId
     @StateObject private var audioPlayer = AudioPlayer()
     
     let api = ElevenLabsAPI()
@@ -50,8 +50,8 @@ struct SelectSpeechVoiceView: View {
                 
                 PrimaryButton(text: "Use This Voice") {
                     guard let selectedVoiceData else { return }
-                    if let voiceData = voiceDict[selectedVoiceData.voiceId] {
-                        self.uploadVoice(data: voiceData)
+                    if let audioData = cachedAudio[selectedVoiceData.voiceId] {
+                        self.uploadVoice(data: audioData)
                     } else {
                         self.callGetSpeechAudio(voiceId: selectedVoiceData.voiceId) { data in
                             if let audioData = data {
@@ -96,8 +96,8 @@ extension SelectSpeechVoiceView {
                 .frame(width: 24, height: 24)
                 .onTapGesture {
                     audioPlayer.stop()
-                    if let voiceData = voiceDict[data.voiceId] {
-                        audioPlayer.playFromData(voiceData)
+                    if let audioData = cachedAudio[data.voiceId] {
+                        audioPlayer.playFromData(audioData)
                     } else {
                         self.callGetSpeechAudio(voiceId: data.voiceId) { audioData in
                             if let audioData {
@@ -149,6 +149,7 @@ extension SelectSpeechVoiceView {
                     voiceId: voiceId
                 )
                 isLoading = false
+                cachedAudio[voiceId] = audioData
                 completion(audioData)
             } catch {
                 isLoading = false

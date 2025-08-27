@@ -24,36 +24,59 @@ struct TextToSpeechAlarmView: View {
             TopBarView<HomeRoute>(path: $path, title: "Text to speech alarm creation")
             
             VStack(spacing: 20) {
-                getTopView()
                 
-                List {
-                    VStack(alignment: .leading, spacing: 10) {
+                Group {
+                    SecondaryTextField(placeholder: "Name your custom speech", text: $speechName)
+                    
+                    PrimaryTextEditor(placeholder: "Enter your text to create tune...", text: $speechText)
+                    
+                    SecondaryButton(text: "Add Speech") {
+                        if validateFields() {
+                            self.callAddSpeech()
+                        }
+                    }
+                }
+                .padding(.horizontal, 20)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
                         Text("Recently used speech")
                             .font(.getFont(.semiBold, size: 20))
                             .foregroundStyle(.black)
-                        
-                        ForEach(arraySpeech.indices, id: \.self) { index in
-                            let speechData = self.arraySpeech[index]
-                            getListItem(speechData: speechData)
-                                .onTapGesture {
-                                    self.selectedSpeech = speechData
-                                }
-                        }
+                        Spacer()
                     }
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                    .listRowSeparator(.hidden)
+                    .frame(height: 32)
+                    .background(.white)
+                    .padding(.horizontal, 20)
+                    
+                    List {
+                        VStack(alignment: .leading, spacing: 10) {
+                            ForEach(arraySpeech.indices, id: \.self) { index in
+                                let speechData = self.arraySpeech[index]
+                                getListItem(speechData: speechData)
+                                    .onTapGesture {
+                                        self.selectedSpeech = speechData
+                                    }
+                            }
+                            .padding(.top, 2)
+                        }
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        .listRowSeparator(.hidden)
+                    }
+                    .listStyle(.plain)
+                    .scrollIndicators(.hidden)
+                    
                 }
-                .listStyle(.plain)
-                .scrollIndicators(.hidden)
                 
-                PrimaryButton(text: "Use this speech") {
+                SecondaryButton(text: "Use this speech") {
                     guard let selectedSpeech = self.selectedSpeech else { return }
                     self.path.append(.selectSpeechVoice(speechData: selectedSpeech))
                 }
+                .padding(.horizontal, 20)
                 .opacity(selectedSpeech != nil ? 1 : 0.5)
                 .disabled(selectedSpeech == nil)
             }
-            .padding(.all, 20)
+            .padding(.vertical, 20)
         }
         .onAppear {
             self.callGetSpeech()
@@ -67,42 +90,6 @@ struct TextToSpeechAlarmView: View {
 
 // MARK: - UI Methods
 extension TextToSpeechAlarmView {
-    private func getTopView() -> some View {
-        Group {
-            VStack(spacing: 8) {
-                SecondaryTextField(placeholder: "Name your custom speech", text: $speechName)
-                
-                ZStack(alignment: .topLeading) {
-                    // Placeholder
-                    if speechText.isEmpty {
-                        Text("Enter your text to create tune...")
-                            .foregroundStyle(.customCDA9C3)
-                            .font(.getFont(.medium, size: 14))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 20)
-                            .zIndex(1)
-                    }
-                    
-                    TextEditor(text: $speechText)
-                        .frame(height: 150)
-                        .font(.getFont(.medium, size: 14))
-                        .foregroundStyle(.customCDA9C3)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 10) // ensures alignment with placeholder
-                        .background(Color.clear)
-                }
-                .frame(height: 150)
-                
-            }
-            
-            PrimaryButton(text: "Add Speech") {
-                if validateFields() {
-                    self.callAddSpeech()
-                }
-            }
-        }
-    }
-    
     private func getListItem(speechData: SpeechModel) -> some View {
         HStack {
             Text(speechData.description ?? "")
@@ -111,9 +98,13 @@ extension TextToSpeechAlarmView {
         }
         .padding(.all, 10)
         .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(.custom9287FF.opacity(speechData.id == self.selectedSpeech?.id ? 0.2 : 0.1))
+            RoundedRectangle(cornerRadius: 20)
+                .fill(speechData.id == selectedSpeech?.id ? .hexE6EEFD : .hexF3F7FF) .overlay(RoundedRectangle(cornerRadius: 20)
+                    .stroke(speechData.id == selectedSpeech?.id ? .hex397FD6 : .clear, lineWidth: 2))
         )
+        .padding(.horizontal, 20)
+        .shadow(color: Color(hex: "#19196F").opacity(0.25), radius: 6.2, x: 0, y: 4)
+        .padding(-1)
     }
 }
 

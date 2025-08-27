@@ -21,6 +21,9 @@ struct SecondaryTextField: View {
     
     @State private var isSecure: Bool = true
     
+    var placeholderColor = Color.customCDA9C3
+    
+    
     var body: some View {
         HStack(spacing: 10) {
             if let icon = icon {
@@ -32,19 +35,16 @@ struct SecondaryTextField: View {
             if fieldType == .secure && isSecureToggleEnabled {
                 Group {
                     if isSecure {
-                        SecureField(placeholder, text: $text)
-                            .keyboardType(keyboardType)
+                        secureField
                     } else {
-                        TextField(placeholder, text: $text)
-                            .keyboardType(keyboardType)
+                        normalField
                     }
                 }
             } else if fieldType == .secure {
-                SecureField(placeholder, text: $text)
-                    .keyboardType(keyboardType)
+                secureField
+                
             } else {
-                TextField(placeholder, text: $text)
-                    .keyboardType(keyboardType)
+                normalField
             }
             
             if fieldType == .secure && isSecureToggleEnabled {
@@ -71,14 +71,40 @@ struct SecondaryTextField: View {
                 .fill(.customFFF6FB)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(
-                            LinearGradient(colors: [.white.opacity(0), .white, .white.opacity(0)],
-                                           startPoint: .top,
-                                           endPoint: .bottom),
-                            lineWidth: 1.5
-                        )
+                        .stroke(Color.hexECBBE8, lineWidth: 1.5)
                 )
         )
         .shadow(color: .black.opacity(0.10), radius: 14, x: 0, y: 0)
     }
+}
+
+extension SecondaryTextField {
+    
+    private var normalField: some View {
+        TextField(
+            "",
+            text: $text,
+            prompt: Text(placeholder)
+                .foregroundStyle(placeholderColor)
+        )
+        .keyboardType(keyboardType)
+        .tint(.hexECBBE8)
+        .foregroundStyle(.black)
+    }
+    
+    private var secureField: some View {
+        SecureField(
+            "",
+            text: $text,
+            prompt: Text(placeholder)
+                .foregroundStyle(placeholderColor)
+        )
+        .keyboardType(keyboardType)
+        .tint(.hexECBBE8)
+        .foregroundStyle(.black)
+    }
+}
+
+#Preview {
+    SecondaryTextField(placeholder: "test", text: .constant(""))
 }
