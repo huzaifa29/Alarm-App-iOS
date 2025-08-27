@@ -23,7 +23,6 @@ struct SecondaryTextField: View {
     
     var placeholderColor = Color.customCDA9C3
     
-    
     var body: some View {
         HStack(spacing: 10) {
             if let icon = icon {

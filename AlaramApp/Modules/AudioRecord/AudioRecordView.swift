@@ -25,41 +25,30 @@ struct AudioRecordView: View {
             
             VStack(spacing: 20) {
                 
-                PrimaryTextField(icon: "", placeholder: "Name your voice", text: $audioName)
+                PrimaryTextField(placeholder: "Name your voice", text: $audioName, showNewDesign: true)
                 
                 Text("Record your voice")
                     .font(.getFont(.bold, size: 20))
+                    .foregroundStyle(.custom2D2D40)
                 
-                ZStack {
-                    Circle()
-                        .fill(.pink.opacity(0.2))
-                        .frame(width: 150, height: 150)
-                    
-                    Circle()
-                        .fill(.customBBA8F7)
-                        .frame(width: 101, height: 101)
-                    
-                    Circle()
-                        .fill(Color.red)
-                        .frame(width: 73, height: 73)
-                    
-                    Image(systemName: "mic.fill")
-                        .font(.system(size: 33, weight: .semibold))
-                        .foregroundColor(.white)
-                    
-                }
-                .frame(width: 150, height: 150)
-                .onTapGesture {
+                Button {
                     showPlayer = true
                     if !viewModel.isRecording {
                         viewModel.startRecording()
                     } else {
                         viewModel.stopRecording()
                     }
+                } label: {
+                    Image(.micIcon)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 151, height: 151)
+                        .frame(width: 150, height: 150)
                 }
                 
                 Text(viewModel.isRecording ? "Tap to stop recording" : "Tap to start recording")
                     .font(.getFont(.medium, size: 16))
+                    .foregroundStyle(.black)
                 
                 if showPlayer {
                     getAudioPlayerView()
@@ -67,7 +56,7 @@ struct AudioRecordView: View {
                 
                 Spacer()
                 
-                PrimaryButton( text: "Use this Voice") {
+                SecondaryButton( text: "Use this Voice") {
                     if audioName.isEmpty {
                         alertData.show(message: "Enter Voice Name")
                     } else if self.viewModel.recordingTime == 0 || !self.viewModel.recordingFileExists() {
@@ -108,11 +97,31 @@ extension AudioRecordView {
                 }
                 
                 ZStack {
-                    UnevenRoundedRectangle(bottomLeadingRadius: 20, bottomTrailingRadius: 30)
-                        .fill(.red.opacity(0.1))
+                    UnevenRoundedRectangle(bottomLeadingRadius: 24, bottomTrailingRadius: 24)
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    Color(hex: "#ECBBE8").opacity(0.6),
+                                    Color(hex: "#F3F3DF"),
+                                    Color(hex: "#C9EACF").opacity(0.6)
+                                ]),
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
                     
-                    UnevenRoundedRectangle(bottomLeadingRadius: 20, bottomTrailingRadius: 30)
-                        .fill(.purple.opacity(0.3))
+                    UnevenRoundedRectangle(bottomLeadingRadius: 24, bottomTrailingRadius: 24)
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    Color(hex: "#ECBBE8"),
+                                    Color(hex: "#F3F3DF"),
+                                    Color(hex: "#C9EACF")
+                                ]),
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
                         .padding(.horizontal, 20)
                     
                     WaveformView(
@@ -130,14 +139,11 @@ extension AudioRecordView {
                     viewModel.startRecording()
                 } label: {
                     VStack(spacing: 10) {
-                        Circle()
-                            .fill(.blue)
+                        Image(.restartIcon)
+                            .resizable()
+                            .scaledToFit()
                             .frame(width: 50, height: 50)
-                            .overlay(
-                                Image(systemName: "arrow.counterclockwise")
-                                    .font(.system(size: 20))
-                                    .foregroundStyle(.white)
-                            )
+                        
                         Text("Restart recording")
                             .font(.getFont(.medium, size: 12))
                             .foregroundStyle(.black)
@@ -154,14 +160,12 @@ extension AudioRecordView {
                         }
                     } label: {
                         VStack(spacing: 10) {
-                            Circle()
-                                .fill(.green)
+                            Image(.playRecordingIcon)
+                                .resizable()
+                                .scaledToFit()
                                 .frame(width: 50, height: 50)
-                                .overlay(
-                                    Image(systemName: viewModel.isPlaying ? "pause" : "play")
-                                        .font(.system(size: 20))
-                                        .foregroundStyle(.white)
-                                )
+                                .shadow(color: Color(hex: "#6CE484").opacity(0.35), radius: 15.3, x: 0, y: 15)
+                            
                             Text(viewModel.isPlaying ? "Stop Playing" : "Play recording")
                                 .font(.getFont(.medium, size: 12))
                                 .foregroundStyle(.black)

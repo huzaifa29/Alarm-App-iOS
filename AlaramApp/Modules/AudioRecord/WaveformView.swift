@@ -18,7 +18,7 @@ struct WaveformView: View {
                 HStack(alignment: .center, spacing: 10) {
                     ForEach(amplitudes.indices, id: \.self) { i in
                         RoundedRectangle(cornerRadius: 2)
-                            .fill(i <= (highlightUntil ?? -1) ? Color.white : Color.black)
+                            .fill(i <= (highlightUntil ?? -1) ? Color.white : Color.hex626265)
                             .frame(width: 5, height: amplitudes[i])
                             .id(i)
                     }
