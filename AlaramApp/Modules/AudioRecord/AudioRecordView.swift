@@ -14,6 +14,7 @@ struct AudioRecordView: View {
     @State private var alertData = AlertData()
     @State private var uploadPath = ""
     @State private var showPlayer = false
+    @State private var isAnimating = false
     
     // Dependencies
     @Binding var path: [HomeRoute]
@@ -25,7 +26,7 @@ struct AudioRecordView: View {
             
             VStack(spacing: 20) {
                 
-                PrimaryTextField(placeholder: "Name your voice", text: $audioName, showNewDesign: true)
+                TertiaryTextField(placeholder: "Name your voice", text: $audioName)
                 
                 Text("Record your voice")
                     .font(.getFont(.bold, size: 20))
@@ -38,12 +39,48 @@ struct AudioRecordView: View {
                     } else {
                         viewModel.stopRecording()
                     }
+                    isAnimating.toggle()
                 } label: {
-                    Image(.micIcon)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 151, height: 151)
-                        .frame(width: 150, height: 150)
+                    
+                    ZStack {
+                        // Outer pulsing circle
+                        Circle()
+                            .fill(Color.hex8F98FF.opacity(0.3))
+                            .frame(width: 150, height: 150)
+                            .scaleEffect(isAnimating ? 1.2 : 1.0)
+                            .animation(
+                                isAnimating ?
+                                    .easeInOut(duration: 1.5).repeatForever(autoreverses: true) :
+                                        .easeInOut(duration: 0.3),
+                                value: isAnimating
+                            )
+                        
+                        // Middle pulsing circle
+                        Circle()
+                            .fill(Color.hex8F98FF.opacity(0.2))
+                            .frame(width: 100, height: 100)
+                            .scaleEffect(isAnimating ? 1.1 : 1.0)
+                            .animation(
+                                isAnimating ?
+                                    .easeInOut(duration: 1.2).repeatForever(autoreverses: true) :
+                                        .easeInOut(duration: 0.3),
+                                value: isAnimating
+                            )
+                        
+                        // Microphone icon
+                        Image(.micIcon)
+                            .resizable()
+                            .frame(width: 73, height: 73)
+                            .shadow(color: .customF5C1FF.opacity(0.4), radius: 26.2, x: 0, y: 13)
+                            .scaleEffect(isAnimating ? 1.05 : 1.0)
+                            .animation(
+                                isAnimating ?
+                                    .easeInOut(duration: 1.0).repeatForever(autoreverses: true) :
+                                        .easeInOut(duration: 0.3),
+                                value: isAnimating
+                            )
+                    }
+                    .frame(width: 150, height: 150)
                 }
                 
                 Text(viewModel.isRecording ? "Tap to stop recording" : "Tap to start recording")

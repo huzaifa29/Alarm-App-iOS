@@ -18,94 +18,11 @@ struct PrimaryTextField: View {
     var fieldType: FieldType = .normal
     var keyboardType: UIKeyboardType = .default
     var isSecureToggleEnabled: Bool = false
-    var showNewDesign = false
     
     @State private var isSecure: Bool = true
     var placeholderColor = Color.customCDA9C3
     
     var body: some View {
-        if showNewDesign {
-            HStack(spacing: 10) {
-                if !icon.isEmpty {
-                    Image(icon)
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                }
-                
-                if fieldType == .secure && isSecureToggleEnabled {
-                    Group {
-                        if isSecure {
-                            secureField
-                        } else {
-                           normalField
-                        }
-                    }
-                } else if fieldType == .secure {
-                    secureField
-                } else {
-                    normalField
-                }
-                
-                if fieldType == .secure && isSecureToggleEnabled {
-                    Button(action: {
-                        isSecure.toggle()
-                    }) {
-                        Image(isSecure ? "ic_eye" : "ic_eye_slash")
-                            .foregroundColor(Color.purple.opacity(0.7))
-                    }
-                }
-                
-                if fieldType == .dropdown {
-                    Image(systemName: "chevron.down")
-                        .foregroundColor(Color.purple.opacity(0.7))
-                }
-            }
-            .padding(.vertical, 15.5)
-            .padding(.horizontal, 20)
-            .font(.getFont(.medium, size: 14))
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(.white)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(.hexFFE4D2, lineWidth: 4)
-                    )
-            )
-            
-        } else {
-            getOldDesign()
-        }
-    }
-}
-
-extension PrimaryTextField {
-    private var normalField: some View {
-        TextField(
-            "",
-            text: $text,
-            prompt: Text(placeholder)
-                .foregroundStyle(placeholderColor)
-        )
-        .keyboardType(keyboardType)
-        .tint(.hexFFE4D2)
-        .foregroundStyle(.black)
-    }
-    
-    private var secureField: some View {
-        SecureField(
-            "",
-            text: $text,
-            prompt: Text(placeholder)
-                .foregroundStyle(placeholderColor)
-        )
-        .keyboardType(keyboardType)
-        .tint(.hexFFE4D2)
-        .foregroundStyle(.black)
-    }
-}
-
-extension PrimaryTextField {
-    func getOldDesign() -> some View {
         HStack(spacing: 10) {
             Image(icon)
                 .resizable()
@@ -162,6 +79,32 @@ extension PrimaryTextField {
     }
 }
 
+extension PrimaryTextField {
+    private var normalField: some View {
+        TextField(
+            "",
+            text: $text,
+            prompt: Text(placeholder)
+                .foregroundStyle(placeholderColor)
+        )
+        .keyboardType(keyboardType)
+        .tint(.hexFFE4D2)
+        .foregroundStyle(.black)
+    }
+    
+    private var secureField: some View {
+        SecureField(
+            "",
+            text: $text,
+            prompt: Text(placeholder)
+                .foregroundStyle(placeholderColor)
+        )
+        .keyboardType(keyboardType)
+        .tint(.hexFFE4D2)
+        .foregroundStyle(.black)
+    }
+}
+
 #Preview {
-    PrimaryTextField(placeholder: "test", text: .constant(""), showNewDesign: true)
+    PrimaryTextField(placeholder: "test", text: .constant(""))
 }

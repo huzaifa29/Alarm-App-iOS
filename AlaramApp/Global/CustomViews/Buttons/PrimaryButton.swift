@@ -81,7 +81,6 @@ struct PrimaryButton: View {
     }
 }
 
-
 #Preview {
     PrimaryButton(text: "test")
 }

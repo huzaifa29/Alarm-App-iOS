@@ -25,7 +25,7 @@ struct PrimaryTextEditor: View {
             }
             TextEditor(text: $text)
                 .scrollContentBackground(.hidden)
-                .tint(.hexECBBE8)
+                .tint(.black)
                 .background(.clear)
                 .frame(height: 150)
                 .font(.getFont(.medium, size: 14))
