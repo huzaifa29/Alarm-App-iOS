@@ -221,7 +221,7 @@ extension AudioRecordView {
         Task {
             guard let userId = supabase.user?.id.uuidString else { return }
             if uploadPath.isEmpty {
-                uploadPath =  userId + "/" + UUID().uuidString + ".m4a"
+                uploadPath =  userId + "/recordings/" + UUID().uuidString + ".m4a"
             }
             
             self.isLoading = true
