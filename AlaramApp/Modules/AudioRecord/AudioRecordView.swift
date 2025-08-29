@@ -39,7 +39,6 @@ struct AudioRecordView: View {
                     } else {
                         viewModel.stopRecording()
                     }
-                    isAnimating.toggle()
                 } label: {
                     
                     ZStack {
@@ -108,6 +107,9 @@ struct AudioRecordView: View {
             .padding(.horizontal, 20)
             
             Spacer()
+        }
+        .onChange(of: viewModel.isRecording) {
+            isAnimating = viewModel.isRecording
         }
         .loader(isLoading: self.isLoading)
         .messageAlert($alertData)
