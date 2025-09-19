@@ -20,7 +20,6 @@ struct SignupView: View {
     @State private var confirmPassword = ""
     @State private var isLoading = false
     @State private var alertData = AlertData()
-    @State private var isSignupSuccess = false
     @State private var showGoogleSignIn = false
     @State private var isPresentTabbar = false
     
@@ -169,8 +168,7 @@ extension SignupView {
             if let errorMessage = error?.localizedDescription {
                 alertData.show(message: errorMessage)
             } else {
-                self.isSignupSuccess = true
-                alertData.show(message: "Account Created Successfully")
+                self.isPresentTabbar = true
             }
         }
     }
