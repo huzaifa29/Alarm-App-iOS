@@ -72,6 +72,7 @@ struct AlarmModel: Codable, Hashable {
         music = try container.decodeIfPresent(MusicModel.self, forKey: .music)
         audioName = try container.decodeIfPresent(String.self, forKey: .audioName)
         audioURL = try container.decodeIfPresent(String.self, forKey: .audioURL)
+        speech = try container.decodeIfPresent(SpeechModel.self, forKey: .speech)
         ttsVoiceId = try container.decodeIfPresent(String.self, forKey: .ttsVoiceId)
     }
     
