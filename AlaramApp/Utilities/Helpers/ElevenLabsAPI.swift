@@ -9,7 +9,7 @@ import Foundation
 import AVFoundation
 
 class ElevenLabsAPI {
-    private let apiKey = "sk_a4fc19f4cab076198527c286b678be5289763ee2edf9a9cb"
+    private let apiKey = "sk_3210498ba700a56c2a59bcd19c6858cf0b42aab0266f9996"
     private let baseURL = "https://api.elevenlabs.io/v1/"
     
     func fetchVoices() async throws -> [VoiceModel] {
