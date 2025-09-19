@@ -55,6 +55,7 @@ struct SigninView: View {
                             }
                         }
                     } else {
+                        isLoading = false
                         alertData.show(message: error ?? "Some thing went wrong")
                     }
                 }

@@ -58,6 +58,7 @@ struct SignupView: View {
                         }
                     }
                 } else {
+                    isLoading = false
                     alertData.show(message: error ?? "Some thing went wrong")
                 }
             }
@@ -151,6 +152,7 @@ extension SignupView {
             isLoading = true
             let error = try await supabase.signUp(email: email, password: password, name: name, language: language)
             if let errorMessage = error?.localizedDescription {
+                isLoading = false
                 alertData.show(message: errorMessage)
             } else {
                 self.callCreateUser()
