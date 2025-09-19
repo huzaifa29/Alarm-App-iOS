@@ -30,8 +30,8 @@ struct SelectSpeechVoiceView: View {
             TopBarView<HomeRoute>(path: $path, title: "Choose a voice for speech")
             
             VStack(spacing: 20) {
-                SecondaryTextField(placeholder: "Select Language", text: $language, fieldType: .dropdown)
-                    .padding(.horizontal, 20)
+                //                SecondaryTextField(placeholder: "Select Language", text: $language, fieldType: .dropdown)
+                //                    .padding(.horizontal, 20)
                 
                 List {
                     VStack(alignment: .leading, spacing: 20) {
