@@ -199,7 +199,7 @@ extension AudioRecordView {
                         }
                     } label: {
                         VStack(spacing: 10) {
-                            Image(.playRecordingIcon)
+                            Image(viewModel.isPlaying ? .stopRecordingIcon : .playRecordingIcon)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 50, height: 50)
