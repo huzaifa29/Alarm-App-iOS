@@ -11,7 +11,7 @@ struct CreateAlarmView: View {
     @State private var isToggleOn = true
     @State private var selectedSegment = 0
     
-    let options = ["Time", "Voice", "Detail"]
+    let options = ["Time", "Detail"]
     
     @Binding var path: [HomeRoute]
     @State var alarmData: AlarmForm
