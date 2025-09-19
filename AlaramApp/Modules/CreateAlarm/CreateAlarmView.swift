@@ -52,13 +52,10 @@ struct CreateAlarmView: View {
                         alarmData.selectedHour = hour
                         alarmData.selectedMinute = minute
                         alarmData.desc = note
-                        selectedSegment = 2
+                        selectedSegment = 1
                     }
                     
                 case 1:
-                    EmptyView()
-                    
-                case 2:
                     DetailView(alarmName: alarmData.title) { alarmName, selectedDays in
                         alarmData.title = alarmName
                         alarmData.selectedDays = selectedDays
