@@ -58,7 +58,7 @@ struct SetAlarmView: View {
                                 .font(.getFont(.bold, size: 16))
                                 .foregroundStyle(.custom433261)
                             
-                            Text(alarmData.musicData?.name ?? "")
+                            Text(alarmData.musicData?.name ?? alarmData.audioName ?? alarmData.speechData?.name ?? "")
                                 .font(.getFont(.medium, size: 14))
                                 .foregroundStyle(.custom433261)
                             
