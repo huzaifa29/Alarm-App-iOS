@@ -20,7 +20,7 @@ struct FrequencyItemView: View {
             .background(
                 Group {
                     if dataModel.isSelected {
-                        getUnselectedBackground()
+                        getSelectedBackground()
                     } else {
                         getUnselectedBackground()
                     }
@@ -33,13 +33,7 @@ struct FrequencyItemView: View {
 extension FrequencyItemView {
     func getSelectedBackground() -> some View {
         Capsule()
-            .fill(
-                LinearGradient(
-                    colors: [.custom9287FF.opacity(0.10), .custom9287FF],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
+            .fill(Color.hexFFC5A1)
             .overlay(
                 Capsule()
                     .strokeBorder(
