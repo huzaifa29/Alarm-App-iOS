@@ -10,7 +10,6 @@ import Foundation
 struct AlarmModel: Codable, Hashable {
     var id: String = UUID().uuidString
     let userId: String
-    let musicId: String?
     let speechId: String?
     let name: String?
     let description: String?
@@ -18,7 +17,6 @@ struct AlarmModel: Codable, Hashable {
     let selectedDays: [String]?
     let time: Date?
     let createdAt: Date?
-    var music: MusicModel? = nil
     var audioName: String?
     var audioURL: String?
     var speech: SpeechModel? = nil
@@ -27,7 +25,6 @@ struct AlarmModel: Codable, Hashable {
     enum CodingKeys: String, CodingKey {
         case id
         case userId = "user_id"
-        case musicId = "music_id"
         case speechId = "speech_id"
         case name
         case description
@@ -35,7 +32,6 @@ struct AlarmModel: Codable, Hashable {
         case selectedDays = "selected_days"
         case time
         case createdAt = "created_at"
-        case music
         case audioName = "audio_name"
         case audioURL = "audio_url"
         case speech
@@ -44,7 +40,6 @@ struct AlarmModel: Codable, Hashable {
     
     init(userId: String, alarmData: AlarmForm?, selectedDays: [String]?, time: Date?) {
         self.userId = userId
-        self.musicId = alarmData?.musicData?.id
         self.speechId = alarmData?.speechData?.id
         self.name = alarmData?.title
         self.description = alarmData?.desc
@@ -61,7 +56,6 @@ struct AlarmModel: Codable, Hashable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
         userId = try container.decodeIfPresent(String.self, forKey: .userId) ?? UUID().uuidString
-        musicId = try container.decodeIfPresent(String.self, forKey: .musicId) ?? UUID().uuidString
         speechId = try container.decodeIfPresent(String.self, forKey: .speechId) ?? UUID().uuidString
         name = try container.decodeIfPresent(String.self, forKey: .name)
         description = try container.decodeIfPresent(String.self, forKey: .description)
@@ -69,7 +63,6 @@ struct AlarmModel: Codable, Hashable {
         selectedDays = try container.decodeIfPresent([String].self, forKey: .selectedDays)
         time = try container.decodeIfPresent(Date.self, forKey: .time)
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
-        music = try container.decodeIfPresent(MusicModel.self, forKey: .music)
         audioName = try container.decodeIfPresent(String.self, forKey: .audioName)
         audioURL = try container.decodeIfPresent(String.self, forKey: .audioURL)
         speech = try container.decodeIfPresent(SpeechModel.self, forKey: .speech)
@@ -80,7 +73,6 @@ struct AlarmModel: Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(userId, forKey: .userId)
-        try container.encode(musicId, forKey: .musicId)
         try container.encode(speechId, forKey: .speechId)
         try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(description, forKey: .description)

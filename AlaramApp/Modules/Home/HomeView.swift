@@ -287,7 +287,6 @@ extension HomeView {
             self.isLoading = true
             let selectFilter = """
                     *,
-                    music:music_id (*),
                     user_profiles:user_id (*),
                     speech:speech_id (*)
                     """

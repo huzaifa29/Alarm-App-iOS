@@ -5,31 +5,23 @@
 //  Created by Hafiz Muhammad Junaid on 25/07/2025.
 //
 
-import Foundation
+import SwiftUI
 
-struct MusicModel: Codable, Hashable {
+struct MusicModel: Identifiable, Hashable {
+    let id = UUID().uuidString
+    let name: String
+    let background: MusicBackground
+    var height = CGFloat.random(in: 86...221)
+    var isPlaying = false
     
-    let id: String?
-    let name: String?
-    let url: String?
-    let thumbnail: String?
-    var height = CGFloat.random(in: 86...227)
-    
-    init(id: String?, name: String?, url: String?, thumbnail: String?) {
-        self.id = id
+    init(name: String, background: MusicBackground, height: CGFloat = CGFloat.random(in: 86...221)) {
         self.name = name
-        self.url = url
-        self.thumbnail = thumbnail
-        height = CGFloat.random(in: 86...227)
+        self.background = background
+        self.height = height
     }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decodeIfPresent(String.self, forKey: .id)
-        name = try container.decodeIfPresent(String.self, forKey: .name)
-        url = try container.decodeIfPresent(String.self, forKey: .url)
-        thumbnail = try container.decodeIfPresent(String.self, forKey: .thumbnail)
-        height = CGFloat.random(in: 86...227)
-    }
-    
+}
+
+struct MusicBackground: Hashable {
+    var image: String
+    var color: Color
 }

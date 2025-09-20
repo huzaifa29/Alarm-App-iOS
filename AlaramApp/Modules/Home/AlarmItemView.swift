@@ -32,7 +32,7 @@ struct AlarmItemView: View {
             
             HStack(spacing: 10) {
                 Image("ic_music")
-                Text(alarmData.music?.name ?? alarmData.audioName ?? alarmData.speech?.name ?? "")
+                Text(alarmData.audioName ?? alarmData.speech?.name ?? "")
                     .font(.getFont(.medium, size: 14))
                     .foregroundStyle(.custom433261)
                 Spacer()

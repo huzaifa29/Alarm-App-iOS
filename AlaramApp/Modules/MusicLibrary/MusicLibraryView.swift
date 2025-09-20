@@ -13,10 +13,9 @@ struct MusicLibraryView: View {
     
     @StateObject private var audioPlayer = AudioPlayer()
     
-    @State private var isLoading = false
+    @State private var isAppear = false
     @State private var arrayMusic: [MusicModel] = []
     @State private var selectedMusic: MusicModel? = nil
-    @State private var selectedId: String? = nil
     
     let supabase: SupabaseManager
     
@@ -29,17 +28,21 @@ struct MusicLibraryView: View {
                 
                 ScrollView {
                     WaterfallGrid(arrayMusic, id: \.self) { musicData in
-                        MusicItemView(musicData: musicData, selectedId: selectedId)
-                            .contentShape(Rectangle())
+                        MusicItemView(musicData: musicData, selectedMusic: selectedMusic)
+                            .contentShape(.rect)
                             .onTapGesture {
-                                if let url = musicData.url, let audioURL = URL(string: url) {
+                                if let audioURL = Bundle.main.url(forResource: musicData.name, withExtension: "mp3") {
                                     self.selectedMusic = musicData
                                     if audioPlayer.isPlaying && audioPlayer.url == audioURL {
                                         audioPlayer.stop()
+                                        self.selectedMusic?.isPlaying = audioPlayer.isPlaying
                                     } else {
                                         audioPlayer.stop()
                                         audioPlayer.playFromURL(audioURL)
+                                        self.selectedMusic?.isPlaying = audioPlayer.isPlaying
                                     }
+                                } else {
+                                    self.selectedMusic?.isPlaying = false
                                 }
                             }
                     }
@@ -49,35 +52,62 @@ struct MusicLibraryView: View {
                 }
                 .padding(.top, 22)
                 
-                PrimaryButton(text: selectedId != nil ? "Next" : "Select Music") {
-                    if selectedId != nil {
-                        self.path.append(.createAlarm(data: .init(musicData: selectedMusic, type: .basic)))
-                    } else {
-                        selectedId = selectedMusic?.id
-                    }
-                    
+                PrimaryButton(text: "Next") {
+                    self.selectedMusic?.isPlaying = false
+                    self.path.append(.createAlarm(data: .init(audioName: selectedMusic?.name, musicData: selectedMusic, type: .basic)))
                 }
+                .opacity(self.selectedMusic == nil ? 0.5 : 1)
+                .disabled(self.selectedMusic == nil)
                 .padding(.all, 20)
             }
         }
         .onAppear {
-            self.callGetMusic()
+            if !isAppear {
+                self.loadMusic()
+                isAppear = true
+            }
         }
         .onDisappear {
             audioPlayer.stop()
         }
-        .loader(isLoading: isLoading)
         .navigationBarHidden(true)
     }
 }
 
 // MARK: - Methods
 extension MusicLibraryView {
-    func callGetMusic() {
-        Task {
-            isLoading = true
-            self.arrayMusic = await supabase.fetchTable(table: .music, as: MusicModel.self) ?? []
-            self.isLoading = false
+    func loadMusic() {
+        let arrayMusicBackground: [MusicBackground] = [
+            .init(image: "music-bg-1", color: .hexB4E086),
+            .init(image: "music-bg-2", color: .hex8F98FF),
+            .init(image: "music-bg-3", color: .hexF2D8FF),
+            .init(image: "music-bg-4", color: .hexFFC28A),
+            .init(image: "music-bg-5", color: .hex7AB6FF),
+            .init(image: "music-bg-6", color: .hexFF8EB5),
+            .init(image: "music-bg-7", color: .hexB4E086),
+        ]
+
+        let musicNames = ["Amberlight",
+                          "Autumn Scene",
+                          "Harmony",
+                          "Healing",
+                          "lullaby",
+                          "moonlight",
+                          "Starlit Beach",
+                          "Sunset",
+                          "The Open Sky"]
+
+        // Shuffle the backgrounds
+        var shuffledBackgrounds = arrayMusicBackground.shuffled()
+
+        // If there are more music items than backgrounds, repeat the shuffled list
+        while shuffledBackgrounds.count < musicNames.count {
+            shuffledBackgrounds.append(contentsOf: arrayMusicBackground.shuffled())
+        }
+
+        // Now assign 1-to-1 without repetition until all backgrounds are used
+        self.arrayMusic = zip(musicNames, shuffledBackgrounds).map { name, bg in
+            MusicModel(name: name, background: bg)
         }
     }
 }
