@@ -28,7 +28,9 @@ struct MusicLibraryView: View {
                 
                 ScrollView {
                     WaterfallGrid(arrayMusic, id: \.self) { musicData in
-                        MusicItemView(musicData: musicData, selectedMusic: selectedMusic)
+                        MusicItemView(musicData: musicData,
+                                      isSelected: selectedMusic?.id == musicData.id,
+                                      isPlaying: selectedMusic?.isPlaying ?? false)
                             .contentShape(.rect)
                             .onTapGesture {
                                 if let audioURL = Bundle.main.url(forResource: musicData.name, withExtension: "mp3") {
