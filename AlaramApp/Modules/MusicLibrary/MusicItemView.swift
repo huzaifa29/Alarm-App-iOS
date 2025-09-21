@@ -65,6 +65,6 @@ struct MusicItemView: View {
 }
 
 #Preview {
-//    MusicItemView(musicData: .init(name: "Amberlight", background: .init(image: "music-bg-1", color: .green)))
+    MusicItemView(musicData: .init(name: "Amberlight", background: .init(image: "music-bg-1", color: .green)))
 }
 

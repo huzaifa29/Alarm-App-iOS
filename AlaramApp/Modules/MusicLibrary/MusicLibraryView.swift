@@ -33,7 +33,7 @@ struct MusicLibraryView: View {
                                       isPlaying: selectedMusic?.isPlaying ?? false)
                             .contentShape(.rect)
                             .onTapGesture {
-                                if let audioURL = Bundle.main.url(forResource: musicData.name, withExtension: "mp3") {
+                                if let audioURL = Bundle.main.url(forResource: musicData.name, withExtension: "wav") {
                                     self.selectedMusic = musicData
                                     if audioPlayer.isPlaying && audioPlayer.url == audioURL {
                                         audioPlayer.stop()

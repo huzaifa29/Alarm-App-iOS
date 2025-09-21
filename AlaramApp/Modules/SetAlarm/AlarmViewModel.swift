@@ -44,7 +44,7 @@ import AppIntents
                                                     attributes: attributes,
                                                     stopIntent: StopIntent(alarmID: id.uuidString),
                                                     secondaryIntent: secondaryIntent(alarmID: id, userInput: userInput),
-                                                    sound: .named(userInput.audioName ?? ""))
+                                                    sound: .named(userInput.getAudioName()))
         
         scheduleAlarm(id: id, label: userInput.localizedLabel, alarmConfiguration: alarmConfiguration)
     }

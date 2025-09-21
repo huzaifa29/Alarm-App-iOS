@@ -96,6 +96,10 @@ struct AlarmForm {
         case .openApp: .custom
         }
     }
+    
+    func getAudioName() -> String {
+        return (audioName ?? "") + ".wav"
+    }
 }
 
 enum AlarmType: String {
