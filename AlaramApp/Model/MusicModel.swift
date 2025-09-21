@@ -12,7 +12,6 @@ struct MusicModel: Identifiable, Hashable {
     let name: String
     let background: MusicBackground
     var height = CGFloat.random(in: 86...221)
-    var isPlaying = false
     
     init(name: String, background: MusicBackground, height: CGFloat = CGFloat.random(in: 86...221)) {
         self.name = name

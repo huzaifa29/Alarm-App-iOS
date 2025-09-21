@@ -30,21 +30,17 @@ struct MusicLibraryView: View {
                     WaterfallGrid(arrayMusic, id: \.self) { musicData in
                         MusicItemView(musicData: musicData,
                                       isSelected: selectedMusic?.id == musicData.id,
-                                      isPlaying: selectedMusic?.isPlaying ?? false)
+                                      isPlaying: audioPlayer.isPlaying)
                             .contentShape(.rect)
                             .onTapGesture {
                                 if let audioURL = Bundle.main.url(forResource: musicData.name, withExtension: "wav") {
                                     self.selectedMusic = musicData
                                     if audioPlayer.isPlaying && audioPlayer.url == audioURL {
                                         audioPlayer.stop()
-                                        self.selectedMusic?.isPlaying = audioPlayer.isPlaying
                                     } else {
                                         audioPlayer.stop()
                                         audioPlayer.playFromURL(audioURL)
-                                        self.selectedMusic?.isPlaying = audioPlayer.isPlaying
                                     }
-                                } else {
-                                    self.selectedMusic?.isPlaying = false
                                 }
                             }
                     }
@@ -55,7 +51,7 @@ struct MusicLibraryView: View {
                 .padding(.top, 22)
                 
                 PrimaryButton(text: "Next") {
-                    self.selectedMusic?.isPlaying = false
+                    audioPlayer.stop()
                     self.path.append(.createAlarm(data: .init(audioName: selectedMusic?.name, musicData: selectedMusic, type: .basic)))
                 }
                 .opacity(self.selectedMusic == nil ? 0.5 : 1)
